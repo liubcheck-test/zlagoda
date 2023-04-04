@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface StoreProductService {
+import helsinki.model.StoreProduct;
+
+public interface StoreProductService extends BasicService<StoreProduct, String> {
 }

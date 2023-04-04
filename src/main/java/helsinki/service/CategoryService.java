@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface CategoryService {
+import helsinki.model.Category;
+
+public interface CategoryService extends BasicService<Category, Integer> {
 }

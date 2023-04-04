@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface CustomerCardService {
+import helsinki.model.CustomerCard;
+
+public interface CustomerCardService extends BasicService<CustomerCard, String> {
 }

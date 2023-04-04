@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface CheckService {
+import helsinki.model.Check;
+
+public interface CheckService extends BasicService<Check, String> {
 }

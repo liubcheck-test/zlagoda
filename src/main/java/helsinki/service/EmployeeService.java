@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface EmployeeService {
+import helsinki.model.Employee;
+
+public interface EmployeeService extends BasicService<Employee, String> {
 }

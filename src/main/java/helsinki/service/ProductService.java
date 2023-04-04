@@ -1,4 +1,6 @@
 package helsinki.service;
 
-public interface ProductService {
+import helsinki.model.Product;
+
+public interface ProductService extends BasicService<Product, Long> {
 }
