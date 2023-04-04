@@ -22,10 +22,10 @@ public class StoreProductDaoImpl implements StoreProductDao {
                 + "products_number, promotional_product) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveProductStatement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
-            saveProductStatement.setString(1, product.getUPC());
-            saveProductStatement.setString(2, product.getUPCProm());
+                PreparedStatement saveProductStatement = connection.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS)) {
+            saveProductStatement.setString(1, product.getUpc());
+            saveProductStatement.setString(2, product.getUpcProm());
             saveProductStatement.setLong(3, product.getProduct().getId());
             saveProductStatement.setBigDecimal(4, product.getPrice());
             saveProductStatement.setInt(5, product.getAmount());
@@ -42,7 +42,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
         String query = "SELECT * FROM Store_Product WHERE UPC = ?";
         StoreProduct product = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getProductStatement = connection.prepareStatement(query)) {
+                PreparedStatement getProductStatement = connection.prepareStatement(query)) {
             getProductStatement.setString(1, upc);
             ResultSet resultSet = getProductStatement.executeQuery();
             if (resultSet.next()) {
@@ -52,7 +52,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
             throw new DataProcessingException("Couldn't get store product by UPC " + upc, e);
         }
         if (product != null) {
-            product.setProduct(getProductByStoreProductUPC(product.getUPC()));
+            product.setProduct(getProductByStoreProductUpc(product.getUpc()));
         }
         return Optional.ofNullable(product);
     }
@@ -62,7 +62,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
         String query = "SELECT * FROM Store_Product";
         List<StoreProduct> storeProducts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllProductsStatement.executeQuery();
             while (resultSet.next()) {
                 storeProducts.add(parseStoreProductFromResultSet(resultSet));
@@ -72,7 +72,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
                     + "from store products database.", e);
         }
         storeProducts.forEach(storeProduct ->
-                storeProduct.setProduct(getProductByStoreProductUPC(storeProduct.getUPC())));
+                storeProduct.setProduct(getProductByStoreProductUpc(storeProduct.getUpc())));
         return storeProducts;
     }
 
@@ -83,14 +83,13 @@ public class StoreProductDaoImpl implements StoreProductDao {
                 + "products_number = ?, promotional_product = ? "
                 + "WHERE UPC = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement updateProductStatement
-                     = connection.prepareStatement(query)) {
-            updateProductStatement.setString(1, product.getUPCProm());
+                PreparedStatement updateProductStatement = connection.prepareStatement(query)) {
+            updateProductStatement.setString(1, product.getUpcProm());
             updateProductStatement.setLong(2, product.getProduct().getId());
             updateProductStatement.setBigDecimal(3, product.getPrice());
             updateProductStatement.setInt(4, product.getAmount());
             updateProductStatement.setBoolean(5, product.getIsPromotional());
-            updateProductStatement.setString(6, product.getUPC());
+            updateProductStatement.setString(6, product.getUpc());
             updateProductStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't update "
@@ -103,7 +102,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
     public boolean delete(String upc) {
         String query = "DELETE FROM Store_Product WHERE UPC = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement deleteProductStatement = connection.prepareStatement(query)) {
+                PreparedStatement deleteProductStatement = connection.prepareStatement(query)) {
             deleteProductStatement.setString(1, upc);
             return deleteProductStatement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -113,15 +112,15 @@ public class StoreProductDaoImpl implements StoreProductDao {
 
     private StoreProduct parseStoreProductFromResultSet(ResultSet resultSet) throws SQLException {
         StoreProduct product = new StoreProduct();
-        product.setUPC(resultSet.getString("UPC"));
-        product.setUPCProm(resultSet.getString("UPC_prom"));
+        product.setUpc(resultSet.getString("UPC"));
+        product.setUpcProm(resultSet.getString("UPC_prom"));
         product.setPrice(resultSet.getBigDecimal("selling_price"));
         product.setAmount(resultSet.getInt("products_number"));
         product.setIsPromotional(resultSet.getBoolean("promotional_product"));
         return product;
     }
 
-    private Product getProductByStoreProductUPC(String upc) {
+    private Product getProductByStoreProductUpc(String upc) {
         String query = "SELECT id_product, product.category_number, category_name, "
                 + "product_name, characteristics FROM product "
                 + "JOIN store_product sp on product.id_product = sp.id_product "
@@ -129,7 +128,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
                 + "WHERE sp.UPC = ?";
         Product product = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getProductStatement = connection.prepareStatement(query)) {
+                PreparedStatement getProductStatement = connection.prepareStatement(query)) {
             getProductStatement.setString(1, upc);
             ResultSet resultSet = getProductStatement.executeQuery();
             if (resultSet.next()) {

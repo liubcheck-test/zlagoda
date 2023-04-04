@@ -25,9 +25,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 + "phone_number, city, street, zip_code)"
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveEmployeeStatement =
-                     connection.prepareStatement(
-                             query, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement saveEmployeeStatement =
+                        connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             saveEmployeeStatement.setString(1, UUID.randomUUID().toString());
             saveEmployeeStatement.setString(2, employee.getEmployeeFullName().getSurname());
             saveEmployeeStatement.setString(3, employee.getEmployeeFullName().getName());
@@ -56,7 +55,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String query = "SELECT * FROM Employee WHERE id_employee = ?";
         Employee employee = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
+                PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
             getEmployeeStatement.setString(1, id);
             ResultSet resultSet = getEmployeeStatement.executeQuery();
             if (resultSet.next()) {
@@ -73,7 +72,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String query = "SELECT * FROM Employee";
         List<Employee> employees = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllEmployeesStatement.executeQuery();
             while (resultSet.next()) {
                 employees.add(parseEmployeeFromResultSet(resultSet));
@@ -93,8 +92,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 + "phone_number = ?, city = ?, street = ?, zip_code = ? "
                 + "WHERE id_employee = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement updateEmployeeStatement
-                     = connection.prepareStatement(query)) {
+                PreparedStatement updateEmployeeStatement = connection.prepareStatement(query)) {
             updateEmployeeStatement.setString(1,
                     employee.getEmployeeFullName().getSurname());
             updateEmployeeStatement.setString(2,
@@ -122,7 +120,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     public boolean delete(String id) {
         String query = "DELETE FROM Employee WHERE id_employee = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement deleteEmployeeStatement = connection.prepareStatement(query)) {
+                PreparedStatement deleteEmployeeStatement = connection.prepareStatement(query)) {
             deleteEmployeeStatement.setString(1, id);
             return deleteEmployeeStatement.executeUpdate() > 0;
         } catch (SQLException e) {

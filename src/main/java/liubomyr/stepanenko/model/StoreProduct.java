@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StoreProduct {
     @Pattern(regexp = "\\d{12}")
-    private String UPC;
-    private String UPCProm;
+    private String upc;
+    private String upcProm;
     private Product product;
     @Positive
     private BigDecimal price;

@@ -9,10 +9,12 @@ import liubomyr.stepanenko.model.composite.FullName;
 public class FullNameValidator implements ConstraintValidator<IsFullName, FullName> {
     private static final String SURNAME_PATTERN = "[\\p{Lu}\\p{Ll}]{2,}[\\s\\p{Pd}]";
     private static final String NAME_PATTERN = "[\\p{Lu}\\p{Ll}]+";
-    private static final String PATRONYMIC_PATTERN = "(\\s[\\p{Lu}\\p{Ll}]+)?(\\s[\\p{Lu}\\p{Ll}]+)?$";
+    private static final String PATRONYMIC_PATTERN
+            = "(\\s[\\p{Lu}\\p{Ll}]+)?(\\s[\\p{Lu}\\p{Ll}]+)?$";
 
     @Override
-    public boolean isValid(FullName fullName, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(FullName fullName,
+                           ConstraintValidatorContext constraintValidatorContext) {
         if (fullName == null) {
             return false;
         }

@@ -20,8 +20,8 @@ public class ProductDaoImpl implements ProductDao {
         String query = "INSERT INTO Product (category_number, product_name, characteristics) "
                 + "VALUES (?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveProductStatement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement saveProductStatement = connection.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS)) {
             saveProductStatement.setInt(1, product.getCategory().getCategoryNumber());
             saveProductStatement.setString(2, product.getName());
             saveProductStatement.setString(3, product.getCharacteristics());
@@ -45,7 +45,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "WHERE id_product = ?";
         Product product = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getProductStatement = connection.prepareStatement(query)) {
+                PreparedStatement getProductStatement = connection.prepareStatement(query)) {
             getProductStatement.setLong(1, id);
             ResultSet resultSet = getProductStatement.executeQuery();
             if (resultSet.next()) {
@@ -64,7 +64,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "JOIN category ON product.category_number = category.category_number ";
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllProductsStatement.executeQuery();
             while (resultSet.next()) {
                 products.add(parseProductFromResultSet(resultSet));
@@ -82,8 +82,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "SET category_number = ?, product_name = ?, characteristics = ? "
                 + "WHERE id_product = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement updateProductStatement
-                     = connection.prepareStatement(query)) {
+                PreparedStatement updateProductStatement = connection.prepareStatement(query)) {
             updateProductStatement.setInt(1, product.getCategory().getCategoryNumber());
             updateProductStatement.setString(2, product.getName());
             updateProductStatement.setString(3, product.getCharacteristics());
@@ -99,7 +98,7 @@ public class ProductDaoImpl implements ProductDao {
     public boolean delete(Long id) {
         String query = "DELETE FROM Product WHERE id_product = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement deleteProductStatement = connection.prepareStatement(query)) {
+                PreparedStatement deleteProductStatement = connection.prepareStatement(query)) {
             deleteProductStatement.setLong(1, id);
             return deleteProductStatement.executeUpdate() > 0;
         } catch (SQLException e) {

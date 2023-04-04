@@ -22,8 +22,8 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
                 + "cust_patronymic, phone_number, city, street, zip_code, percent) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveCardStatement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement saveCardStatement = connection.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS)) {
             saveCardStatement.setString(1, card.getCardNumber());
             saveCardStatement.setString(2, card.getCustomerFullName().getSurname());
             saveCardStatement.setString(3, card.getCustomerFullName().getName());
@@ -45,7 +45,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         String query = "SELECT * FROM Customer_Card WHERE card_number = ?";
         CustomerCard card = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getCardStatement = connection.prepareStatement(query)) {
+                PreparedStatement getCardStatement = connection.prepareStatement(query)) {
             getCardStatement.setString(1, number);
             ResultSet resultSet = getCardStatement.executeQuery();
             if (resultSet.next()) {
@@ -62,7 +62,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         String query = "SELECT * FROM Customer_Card";
         List<CustomerCard> cards = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllCardsStatement.executeQuery();
             while (resultSet.next()) {
                 cards.add(parseCustomerCardFromResultSet(resultSet));
@@ -81,8 +81,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
                 + "phone_number = ?, city = ?, street = ?, zip_code = ?, percent = ? "
                 + "WHERE card_number = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement updateCardStatement
-                     = connection.prepareStatement(query)) {
+                PreparedStatement updateCardStatement = connection.prepareStatement(query)) {
             updateCardStatement.setString(1, card.getCustomerFullName().getSurname());
             updateCardStatement.setString(2, card.getCustomerFullName().getName());
             updateCardStatement.setString(3, card.getCustomerFullName().getPatronymic());
@@ -103,11 +102,12 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
     public boolean delete(String number) {
         String query = "DELETE FROM Customer_Card WHERE card_number = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement deleteCardStatement = connection.prepareStatement(query)) {
+                PreparedStatement deleteCardStatement = connection.prepareStatement(query)) {
             deleteCardStatement.setString(1, number);
             return deleteCardStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't delete customer card with number " + number, e);
+            throw new DataProcessingException("Couldn't delete customer card "
+                    + "with number " + number, e);
         }
     }
 

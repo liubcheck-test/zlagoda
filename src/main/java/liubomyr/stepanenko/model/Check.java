@@ -21,12 +21,12 @@ public class Check {
     @Positive
     private BigDecimal sumTotal;
     @Positive
-    private BigDecimal VAT;
+    private BigDecimal vat;
 
     public Check(String number, LocalDateTime printDate, BigDecimal sumTotal) {
         this.checkNumber = number;
         this.printDate = printDate;
         this.sumTotal = sumTotal;
-        this.VAT = sumTotal.multiply(BigDecimal.valueOf(0.2)).setScale(2, RoundingMode.HALF_UP);
+        this.vat = sumTotal.multiply(BigDecimal.valueOf(0.2)).setScale(2, RoundingMode.HALF_UP);
     }
 }

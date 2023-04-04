@@ -25,14 +25,14 @@ public class CheckDaoImpl implements CheckDao {
                 + "card_number, print_date, sum_total, vat) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveCheckStatement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement saveCheckStatement = connection.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS)) {
             saveCheckStatement.setString(1, check.getCheckNumber());
             saveCheckStatement.setString(2, check.getEmployee().getId());
             saveCheckStatement.setString(3, check.getCard().getCardNumber());
             saveCheckStatement.setDate(4, Date.valueOf(check.getPrintDate().toLocalDate()));
             saveCheckStatement.setBigDecimal(5, check.getSumTotal());
-            saveCheckStatement.setBigDecimal(6, check.getVAT());
+            saveCheckStatement.setBigDecimal(6, check.getVat());
             saveCheckStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't create " + check + ". ", e);
@@ -45,7 +45,7 @@ public class CheckDaoImpl implements CheckDao {
         String query = "SELECT * FROM `check` WHERE check_number = ?";
         Check check = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getCheckStatement = connection.prepareStatement(query)) {
+                PreparedStatement getCheckStatement = connection.prepareStatement(query)) {
             getCheckStatement.setString(1, number);
             ResultSet resultSet = getCheckStatement.executeQuery();
             if (resultSet.next()) {
@@ -66,7 +66,7 @@ public class CheckDaoImpl implements CheckDao {
         String query = "SELECT * FROM `Check`";
         List<Check> checks = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllChecksStatement.executeQuery();
             while (resultSet.next()) {
                 checks.add(parseCheckFromResultSet(resultSet));
@@ -88,14 +88,13 @@ public class CheckDaoImpl implements CheckDao {
                 + "SET id_employee = ?, card_number = ?, print_date = ?, "
                 + "sum_total = ?, vat = ? WHERE check_number = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement updateCheckStatement
-                     = connection.prepareStatement(query)) {
+                PreparedStatement updateCheckStatement = connection.prepareStatement(query)) {
             updateCheckStatement.setString(1, check.getEmployee().getId());
             updateCheckStatement.setString(2, check.getCard().getCardNumber());
             updateCheckStatement.setDate(3,
                     Date.valueOf(check.getPrintDate().toLocalDate()));
             updateCheckStatement.setBigDecimal(4, check.getSumTotal());
-            updateCheckStatement.setBigDecimal(5, check.getVAT());
+            updateCheckStatement.setBigDecimal(5, check.getVat());
             updateCheckStatement.setString(6, check.getCheckNumber());
             updateCheckStatement.executeUpdate();
         } catch (SQLException e) {
@@ -109,7 +108,7 @@ public class CheckDaoImpl implements CheckDao {
     public boolean delete(String number) {
         String query = "DELETE FROM `Check` WHERE check_number = ?";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement deleteCheckStatement = connection.prepareStatement(query)) {
+                PreparedStatement deleteCheckStatement = connection.prepareStatement(query)) {
             deleteCheckStatement.setString(1, number);
             return deleteCheckStatement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -122,7 +121,7 @@ public class CheckDaoImpl implements CheckDao {
         check.setCheckNumber(resultSet.getString("check_number"));
         check.setPrintDate(resultSet.getTimestamp("print_date").toLocalDateTime());
         check.setSumTotal(resultSet.getBigDecimal("sum_total"));
-        check.setVAT(resultSet.getBigDecimal("vat"));
+        check.setVat(resultSet.getBigDecimal("vat"));
         return check;
     }
 
@@ -132,7 +131,7 @@ public class CheckDaoImpl implements CheckDao {
                 + "WHERE `check`.check_number = ?";
         Employee employee = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
+                PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
             getEmployeeStatement.setString(1, number);
             ResultSet resultSet = getEmployeeStatement.executeQuery();
             if (resultSet.next()) {
@@ -172,14 +171,15 @@ public class CheckDaoImpl implements CheckDao {
                 + "WHERE `check`.check_number = ?";
         CustomerCard customerCard = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getCardStatement = connection.prepareStatement(query)) {
+                PreparedStatement getCardStatement = connection.prepareStatement(query)) {
             getCardStatement.setString(1, number);
             ResultSet resultSet = getCardStatement.executeQuery();
             if (resultSet.next()) {
                 customerCard = parseCustomerCardFromResultSet(resultSet);
             }
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't get customer card by check number " + number, e);
+            throw new DataProcessingException("Couldn't get customer card "
+                    + "by check number " + number, e);
         }
         return customerCard;
     }
