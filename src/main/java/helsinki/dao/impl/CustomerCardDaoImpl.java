@@ -113,6 +113,41 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         }
     }
 
+    @Override
+    public List<CustomerCard> getAllSortedBySurname() {
+        String query = "SELECT * FROM Customer_Card ORDER BY cust_surname";
+        List<CustomerCard> cards = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = getAllCardsStatement.executeQuery();
+            while (resultSet.next()) {
+                cards.add(parseCustomerCardFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of customer cards "
+                    + "from customer cards database.", e);
+        }
+        return cards;
+    }
+
+    @Override
+    public List<CustomerCard> getAllByPercentSortedBySurname(Integer percent) {
+        String query = "SELECT * FROM Customer_Card WHERE percent = ? ORDER BY cust_surname";
+        List<CustomerCard> cards = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+            getAllCardsStatement.setInt(1, percent);
+            ResultSet resultSet = getAllCardsStatement.executeQuery();
+            while (resultSet.next()) {
+                cards.add(parseCustomerCardFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of customer cards "
+                    + "from customer cards database.", e);
+        }
+        return cards;
+    }
+
     private CustomerCard parseCustomerCardFromResultSet(ResultSet resultSet) throws SQLException {
         CustomerCard customerCard = new CustomerCard();
         customerCard.setCardNumber(resultSet.getString("card_number"));

@@ -10,7 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import helsinki.exception.DataProcessingException;
@@ -130,6 +132,63 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }
     }
 
+    @Override
+    public List<Employee> getAllSortedBySurname() {
+        String query = "SELECT * FROM Employee ORDER BY empl_surname";
+        List<Employee> employees = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = getAllEmployeesStatement.executeQuery();
+            while (resultSet.next()) {
+                employees.add(parseEmployeeFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of employees "
+                    + "from employees database", e);
+        }
+        return employees;
+    }
+
+    @Override
+    public List<Employee> getAllCashiersSortedBySurname() {
+        String query = "SELECT * FROM Employee WHERE empl_role = 'CASHIER' ORDER BY empl_surname";
+        List<Employee> employees = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = getAllEmployeesStatement.executeQuery();
+            while (resultSet.next()) {
+                employees.add(parseEmployeeFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of employees "
+                    + "from employees database", e);
+        }
+        return employees;
+    }
+
+    @Override
+    public Map<String, String> getPhoneAndAddressBySurname(String surname) {
+        String query = "SELECT phone_number, city, street, zip_code "
+                + "FROM Employee WHERE empl_surname = ?";
+        Map<String, String> employeeData = Map.of(
+                "phone_number", "",
+                "city", "",
+                "street", "",
+                "zip_code", ""
+        );
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
+            getEmployeeStatement.setString(1, surname);
+            ResultSet resultSet = getEmployeeStatement.executeQuery();
+            if (resultSet.next()) {
+                employeeData = parsePhoneAndAddressFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get employee by surname " + surname, e);
+        }
+        return employeeData;
+    }
+
     private Employee parseEmployeeFromResultSet(ResultSet resultSet) throws SQLException {
         Employee employee = new Employee();
         employee.setId(resultSet.getString("id_employee"));
@@ -150,5 +209,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 resultSet.getString("zip_code")
         ));
         return employee;
+    }
+
+    private Map<String, String> parsePhoneAndAddressFromResultSet(ResultSet resultSet)
+            throws SQLException {
+        Map<String, String> employeeData = new HashMap<>();
+        employeeData.put("phone_number", resultSet.getString("phone_number"));
+        employeeData.put("city", resultSet.getString("city"));
+        employeeData.put("street", resultSet.getString("street"));
+        employeeData.put("zip_code", resultSet.getString("zip_code"));
+        return employeeData;
     }
 }

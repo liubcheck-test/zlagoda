@@ -95,6 +95,23 @@ public class CategoryDaoImpl implements CategoryDao {
         }
     }
 
+    @Override
+    public List<Category> getAllSortedByName() {
+        String query = "SELECT * FROM Category ORDER BY category_name";
+        List<Category> categories = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllCategoriesStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = getAllCategoriesStatement.executeQuery();
+            while (resultSet.next()) {
+                categories.add(parseCategoryFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of categories "
+                    + "from categories database.", e);
+        }
+        return categories;
+    }
+
     private Category parseCategoryFromResultSet(ResultSet resultSet) throws SQLException {
         Category category = new Category();
         category.setCategoryNumber(resultSet.getInt("category_number"));

@@ -71,11 +71,11 @@ public class ProductDaoImpl implements ProductDao {
             while (resultSet.next()) {
                 products.add(parseProductFromResultSet(resultSet));
             }
-            return products;
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't get a list of products "
                     + "from products database.", e);
         }
+        return products;
     }
 
     @Override
@@ -89,11 +89,11 @@ public class ProductDaoImpl implements ProductDao {
             updateProductStatement.setString(2, product.getName());
             updateProductStatement.setString(3, product.getCharacteristics());
             updateProductStatement.executeUpdate();
-            return product;
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't update "
                     + product + " in products database.", e);
         }
+        return product;
     }
 
     @Override
@@ -106,6 +106,48 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't delete product with id " + id, e);
         }
+    }
+
+    @Override
+    public List<Product> getAllSortedByName() {
+        String query = "SELECT id_product, product.category_number, category_name, "
+                + "product_name, characteristics FROM product "
+                + "JOIN category ON product.category_number = category.category_number "
+                + "ORDER BY product_name";
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = getAllProductsStatement.executeQuery();
+            while (resultSet.next()) {
+                products.add(parseProductFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of products "
+                    + "from products database.", e);
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> getAllByCategorySortedByName(Integer categoryNumber) {
+        String query = "SELECT id_product, product.category_number, category_name, "
+                + "product_name, characteristics FROM product "
+                + "JOIN category ON product.category_number = category.category_number "
+                + "WHERE product.category_number = ?"
+                + "ORDER BY product_name";
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+            getAllProductsStatement.setInt(1, categoryNumber);
+            ResultSet resultSet = getAllProductsStatement.executeQuery();
+            while (resultSet.next()) {
+                products.add(parseProductFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of products "
+                    + "from products database.", e);
+        }
+        return products;
     }
 
     private Product parseProductFromResultSet(ResultSet resultSet) throws SQLException {

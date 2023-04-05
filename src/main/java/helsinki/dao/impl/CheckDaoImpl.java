@@ -7,12 +7,15 @@ import helsinki.model.CustomerCard;
 import helsinki.model.composite.Address;
 import helsinki.model.composite.FullName;
 import helsinki.util.ConnectionUtil;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -116,6 +119,94 @@ public class CheckDaoImpl implements CheckDao {
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't delete check with number " + number, e);
         }
+    }
+
+    @Override
+    public List<Check> getAllChecksByPeriod(LocalDateTime from, LocalDateTime to) {
+        String query = "SELECT * FROM `Check` WHERE print_date BETWEEN ? AND ?";
+        List<Check> checks = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
+            getAllChecksStatement.setTimestamp(1, Timestamp.valueOf(from));
+            getAllChecksStatement.setTimestamp(2, Timestamp.valueOf(to));
+            ResultSet resultSet = getAllChecksStatement.executeQuery();
+            while (resultSet.next()) {
+                checks.add(parseCheckFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of checks "
+                    + "from checks database.", e);
+        }
+        checks.forEach(check ->
+                check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
+        checks.forEach(check ->
+                check.setCard(getCardByCheckNumber(check.getCheckNumber())));
+        return checks;
+    }
+
+    @Override
+    public BigDecimal getTotalSumByCashierAndPeriod(String employeeId,
+                                                    LocalDateTime from, LocalDateTime to) {
+        String query = "SELECT SUM(sum_total) AS total_sum FROM `Check` "
+                + "WHERE id_employee = ? AND print_date BETWEEN ? AND ?";
+        BigDecimal totalSum = BigDecimal.ZERO;
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getTotalAmountStatement = connection.prepareStatement(query)) {
+            getTotalAmountStatement.setTimestamp(2, Timestamp.valueOf(from));
+            getTotalAmountStatement.setTimestamp(3, Timestamp.valueOf(to));
+            ResultSet resultSet = getTotalAmountStatement.executeQuery();
+            if (resultSet.next()) {
+                totalSum = resultSet.getBigDecimal("total_sum");
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a total "
+                    + "products sum from checks database.", e);
+        }
+        return totalSum;
+    }
+
+    @Override
+    public BigDecimal getTotalSumByPeriod(LocalDateTime from, LocalDateTime to) {
+        String query = "SELECT SUM(sum_total) AS total_sum FROM `Check` "
+                + "WHERE print_date BETWEEN ? AND ?";
+        BigDecimal totalSum = BigDecimal.ZERO;
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getTotalAmountStatement = connection.prepareStatement(query)) {
+            getTotalAmountStatement.setTimestamp(2, Timestamp.valueOf(from));
+            getTotalAmountStatement.setTimestamp(3, Timestamp.valueOf(to));
+            ResultSet resultSet = getTotalAmountStatement.executeQuery();
+            if (resultSet.next()) {
+                totalSum = BigDecimal.valueOf(resultSet.getInt("total_sum"));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a total "
+                    + "products sum from checks database.", e);
+        }
+        return totalSum;
+    }
+
+    @Override
+    public Integer getTotalAmountByProductAndPeriod(String productId,
+                                                    LocalDateTime from, LocalDateTime to) {
+        String query = "SELECT COUNT(products_number) FROM `check` "
+                + "JOIN sale s on `check`.check_number = s.check_number "
+                + "JOIN store_product sp on sp.UPC = s.UPC "
+                + "WHERE id_product = ? AND print_date BETWEEN ? AND ?";
+        int totalAmount = 0;
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getTotalAmountStatement = connection.prepareStatement(query)) {
+            getTotalAmountStatement.setString(1, productId);
+            getTotalAmountStatement.setTimestamp(2, Timestamp.valueOf(from));
+            getTotalAmountStatement.setTimestamp(3, Timestamp.valueOf(to));
+            ResultSet resultSet = getTotalAmountStatement.executeQuery();
+            if (resultSet.next()) {
+                totalAmount = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of store products "
+                    + "from store products database.", e);
+        }
+        return totalAmount;
     }
 
     private Check parseCheckFromResultSet(ResultSet resultSet) throws SQLException {
