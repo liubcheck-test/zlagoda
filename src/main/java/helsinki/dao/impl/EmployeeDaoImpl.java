@@ -1,7 +1,11 @@
 package helsinki.dao.impl;
 
 import helsinki.dao.EmployeeDao;
+import helsinki.exception.DataProcessingException;
+import helsinki.lib.Dao;
+import helsinki.model.Employee;
 import helsinki.model.composite.Address;
+import helsinki.model.composite.FullName;
 import helsinki.util.ConnectionUtil;
 import java.sql.Connection;
 import java.sql.Date;
@@ -15,10 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import helsinki.exception.DataProcessingException;
-import helsinki.lib.Dao;
-import helsinki.model.Employee;
-import helsinki.model.composite.FullName;
 
 @Dao
 public class EmployeeDaoImpl implements EmployeeDao {
@@ -29,7 +29,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 + "phone_number, city, street, zip_code)"
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveEmployeeStatement =
+                PreparedStatement saveEmployeeStatement =
                         connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             saveEmployeeStatement.setString(1, UUID.randomUUID().toString());
             saveEmployeeStatement.setString(2, employee.getEmployeeFullName().getSurname());
@@ -137,7 +137,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String query = "SELECT * FROM Employee ORDER BY empl_surname";
         List<Employee> employees = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllEmployeesStatement.executeQuery();
             while (resultSet.next()) {
                 employees.add(parseEmployeeFromResultSet(resultSet));
@@ -154,7 +154,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String query = "SELECT * FROM Employee WHERE empl_role = 'CASHIER' ORDER BY empl_surname";
         List<Employee> employees = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllEmployeesStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllEmployeesStatement.executeQuery();
             while (resultSet.next()) {
                 employees.add(parseEmployeeFromResultSet(resultSet));
@@ -170,12 +170,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     public Map<String, String> getPhoneAndAddressBySurname(String surname) {
         String query = "SELECT phone_number, city, street, zip_code "
                 + "FROM Employee WHERE empl_surname = ?";
-        Map<String, String> employeeData = Map.of(
-                "phone_number", "",
-                "city", "",
-                "street", "",
-                "zip_code", ""
-        );
+        Map<String, String> employeeData = null;
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getEmployeeStatement = connection.prepareStatement(query)) {
             getEmployeeStatement.setString(1, surname);

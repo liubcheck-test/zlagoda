@@ -1,6 +1,8 @@
 package helsinki.dao.impl;
 
+import helsinki.dao.CustomerCardDao;
 import helsinki.exception.DataProcessingException;
+import helsinki.lib.Dao;
 import helsinki.model.CustomerCard;
 import helsinki.model.composite.Address;
 import helsinki.model.composite.FullName;
@@ -13,8 +15,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import helsinki.dao.CustomerCardDao;
-import helsinki.lib.Dao;
 
 @Dao
 public class CustomerCardDaoImpl implements CustomerCardDao {
@@ -24,7 +24,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
                 + "cust_patronymic, phone_number, city, street, zip_code, percent) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveCardStatement = connection.prepareStatement(query,
+                PreparedStatement saveCardStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
             saveCardStatement.setString(1, card.getCardNumber());
             saveCardStatement.setString(2, card.getCustomerFullName().getSurname());
@@ -118,7 +118,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         String query = "SELECT * FROM Customer_Card ORDER BY cust_surname";
         List<CustomerCard> cards = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllCardsStatement.executeQuery();
             while (resultSet.next()) {
                 cards.add(parseCustomerCardFromResultSet(resultSet));
@@ -135,7 +135,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         String query = "SELECT * FROM Customer_Card WHERE percent = ? ORDER BY cust_surname";
         List<CustomerCard> cards = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
             getAllCardsStatement.setInt(1, percent);
             ResultSet resultSet = getAllCardsStatement.executeQuery();
             while (resultSet.next()) {

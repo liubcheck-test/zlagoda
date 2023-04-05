@@ -2,14 +2,14 @@ package helsinki.service;
 
 import java.util.List;
 
-public interface BasicService<T, Id> {
+public interface BasicService<T, I> {
     T create(T t);
 
-    T get(Id id);
+    T get(I id);
 
     List<T> getAll();
 
     T update(T t);
 
-    boolean delete(Id id);
+    boolean delete(I id);
 }

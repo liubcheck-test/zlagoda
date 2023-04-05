@@ -2,11 +2,11 @@ package helsinki.model;
 
 import helsinki.model.composite.Address;
 import helsinki.model.composite.FullName;
+import helsinki.validation.IsFullName;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
-import helsinki.validation.IsFullName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

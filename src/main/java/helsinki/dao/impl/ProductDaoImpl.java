@@ -22,7 +22,7 @@ public class ProductDaoImpl implements ProductDao {
         String query = "INSERT INTO Product (category_number, product_name, characteristics) "
                 + "VALUES (?, ?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveProductStatement = connection.prepareStatement(query,
+                PreparedStatement saveProductStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
             saveProductStatement.setInt(1, product.getCategory().getCategoryNumber());
             saveProductStatement.setString(2, product.getName());
@@ -54,7 +54,7 @@ public class ProductDaoImpl implements ProductDao {
                 product = parseProductFromResultSet(resultSet);
             }
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't get driver by id " + id, e);
+            throw new DataProcessingException("Couldn't get product by id " + id, e);
         }
         return Optional.ofNullable(product);
     }
@@ -109,6 +109,26 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public Optional<Product> getByProductName(String name) {
+        String query = "SELECT id_product, product.category_number, category_name, "
+                + "product_name, characteristics FROM product "
+                + "JOIN category ON product.category_number = category.category_number "
+                + "WHERE product_name = ?";
+        Product product = null;
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement getProductStatement = connection.prepareStatement(query)) {
+            getProductStatement.setString(1, name);
+            ResultSet resultSet = getProductStatement.executeQuery();
+            if (resultSet.next()) {
+                product = parseProductFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get product by name " + name, e);
+        }
+        return Optional.ofNullable(product);
+    }
+
+    @Override
     public List<Product> getAllSortedByName() {
         String query = "SELECT id_product, product.category_number, category_name, "
                 + "product_name, characteristics FROM product "
@@ -116,7 +136,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "ORDER BY product_name";
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllProductsStatement.executeQuery();
             while (resultSet.next()) {
                 products.add(parseProductFromResultSet(resultSet));
@@ -137,7 +157,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "ORDER BY product_name";
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
             getAllProductsStatement.setInt(1, categoryNumber);
             ResultSet resultSet = getAllProductsStatement.executeQuery();
             while (resultSet.next()) {

@@ -20,7 +20,7 @@ public class CategoryDaoImpl implements CategoryDao {
     public Category save(Category category) {
         String query = "INSERT INTO Category (category_name) VALUES (?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement saveCategoryStatement = connection.prepareStatement(query,
+                PreparedStatement saveCategoryStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
             saveCategoryStatement.setString(1, category.getCategoryName());
             saveCategoryStatement.executeUpdate();
@@ -100,7 +100,7 @@ public class CategoryDaoImpl implements CategoryDao {
         String query = "SELECT * FROM Category ORDER BY category_name";
         List<Category> categories = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement getAllCategoriesStatement = connection.prepareStatement(query)) {
+                PreparedStatement getAllCategoriesStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = getAllCategoriesStatement.executeQuery();
             while (resultSet.next()) {
                 categories.add(parseCategoryFromResultSet(resultSet));

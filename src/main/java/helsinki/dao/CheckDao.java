@@ -4,9 +4,17 @@ import helsinki.model.Check;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface CheckDao extends BasicDao<Check, String> {
+    Map<String, Object> getAllInfoByNumber(String number);
+
+    List<Check> getAllByToday(String employeeId);
+
     List<Check> getAllChecksByPeriod(LocalDateTime from, LocalDateTime to);
+
+    List<Check> getAllChecksByCashierAndPeriod(String employeeId,
+                                               LocalDateTime from, LocalDateTime to);
 
     BigDecimal getTotalSumByCashierAndPeriod(String employeeId,
                                              LocalDateTime from, LocalDateTime to);

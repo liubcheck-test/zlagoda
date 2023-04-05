@@ -13,7 +13,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product get(Long aLong) {
+    public Product get(Long id) {
         return null;
     }
 
@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean delete(Long aLong) {
+    public boolean delete(Long id) {
         return false;
     }
 }

@@ -1,9 +1,9 @@
 package helsinki.model;
 
 import helsinki.model.composite.Address;
-import javax.validation.constraints.Pattern;
 import helsinki.model.composite.FullName;
 import helsinki.validation.IsFullName;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
