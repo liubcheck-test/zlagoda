@@ -27,6 +27,8 @@ public class Employee {
             + "91|92|93|94|95|96|97|98|99)\\s\\d{3}\\s\\d{2}\\s\\d{2}$\n")
     private String phoneNumber;
     private Address address;
+    private String email;
+    private String password;
 
     public enum Role {
         MANAGER, CASHIER

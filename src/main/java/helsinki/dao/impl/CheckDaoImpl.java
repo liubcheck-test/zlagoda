@@ -339,6 +339,8 @@ public class CheckDaoImpl implements CheckDao {
                 resultSet.getString("street"),
                 resultSet.getString("zip_code")
         ));
+        employee.setEmail(resultSet.getString("email"));
+        employee.setPassword(resultSet.getString("password"));
         return employee;
     }
 

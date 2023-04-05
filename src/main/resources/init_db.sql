@@ -26,6 +26,8 @@ CREATE TABLE `Employee`  (
                              `city` varchar(50) NOT NULL,
                              `street` varchar(50) NOT NULL,
                              `zip_code` varchar(9) NOT NULL,
+                             `email` varchar(50) NOT NULL,
+                             `password` varchar(9) NOT NULL,
                              PRIMARY KEY (`id_employee`)
 );
 
