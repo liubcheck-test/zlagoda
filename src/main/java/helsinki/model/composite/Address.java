@@ -16,4 +16,8 @@ public class Address {
     private String street;
     @Pattern(regexp = "\\d{5}(-\\d{4})?")
     private String zipCode;
+
+    public String toString() {
+        return city + ", " + street + ", " + zipCode;
+    }
 }

@@ -34,7 +34,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement saveEmployeeStatement =
                         connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            saveEmployeeStatement.setString(1, UUID.randomUUID().toString());
+            saveEmployeeStatement.setString(1, UUID.randomUUID().toString().substring(0, 10));
             saveEmployeeStatement.setString(2, employee.getEmployeeFullName().getSurname());
             saveEmployeeStatement.setString(3, employee.getEmployeeFullName().getName());
             saveEmployeeStatement.setString(4, employee.getEmployeeFullName().getPatronymic());
@@ -116,7 +116,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
             updateEmployeeStatement.setString(9, employee.getAddress().getCity());
             updateEmployeeStatement.setString(10, employee.getAddress().getStreet());
             updateEmployeeStatement.setString(11, employee.getAddress().getZipCode());
-            updateEmployeeStatement.setString(12, employee.getId());
+            updateEmployeeStatement.setString(12, employee.getEmail());
+            updateEmployeeStatement.setString(13, hashPassword(employee.getPassword()));
+            updateEmployeeStatement.setString(14, employee.getId());
             updateEmployeeStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't update "

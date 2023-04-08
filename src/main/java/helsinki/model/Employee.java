@@ -31,6 +31,17 @@ public class Employee {
     private String password;
 
     public enum Role {
-        MANAGER, CASHIER
+        MANAGER("Manager"),
+        CASHIER("Cashier");
+
+        private final String name;
+
+        Role(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

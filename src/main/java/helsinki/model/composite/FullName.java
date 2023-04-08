@@ -11,4 +11,8 @@ public class FullName {
     private String surname;
     private String name;
     private String patronymic;
+
+    public String toString() {
+        return surname + " " + name + (patronymic != null ? " " + patronymic : "");
+    }
 }

@@ -1,11 +1,16 @@
+body {
+    background-color: #085E99;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    color: #FEF4AB;
+}
 .table_dark {
     font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     width: 70%;
-    color: #085E99;
+    color: #FFFFFF;
     font-size: 40px;
     text-align: center;
     border-collapse: collapse;
-    background: #FEF4AB;
+    background: #A7DD9C;
     margin: auto;
 }
 .table_dark th {

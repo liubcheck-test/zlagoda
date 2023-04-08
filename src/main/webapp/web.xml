@@ -3,4 +3,70 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <servlet>
+        <servlet-name>loginController</servlet-name>
+        <servlet-class>helsinki.controller.LoginController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>loginController</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>logoutController</servlet-name>
+        <servlet-class>helsinki.controller.LogoutController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>logoutController</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>index</servlet-name>
+        <servlet-class>helsinki.controller.MainController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addEmployee</servlet-name>
+        <servlet-class>helsinki.controller.employee.AddEmployeeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addEmployee</servlet-name>
+        <url-pattern>/employees/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllEmployees</servlet-name>
+        <servlet-class>helsinki.controller.employee.GetAllEmployeesController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllEmployees</servlet-name>
+        <url-pattern>/employees</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateEmployee</servlet-name>
+        <servlet-class>helsinki.controller.employee.UpdateEmployeeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateEmployee</servlet-name>
+        <url-pattern>/employees/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteEmployee</servlet-name>
+        <servlet-class>helsinki.controller.employee.DeleteEmployeeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteEmployee</servlet-name>
+        <url-pattern>/employees/delete</url-pattern>
+    </servlet-mapping>
 </web-app>

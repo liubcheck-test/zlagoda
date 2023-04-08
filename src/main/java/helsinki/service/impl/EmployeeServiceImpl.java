@@ -1,5 +1,7 @@
 package helsinki.service.impl;
 
+import helsinki.dao.EmployeeDao;
+import helsinki.lib.Inject;
 import helsinki.lib.Service;
 import helsinki.model.Employee;
 import helsinki.service.EmployeeService;
@@ -8,34 +10,36 @@ import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+    @Inject
+    private EmployeeDao employeeDao;
 
     @Override
     public Employee create(Employee employee) {
-        return null;
+        return employeeDao.save(employee);
     }
 
     @Override
-    public Employee get(String s) {
-        return null;
+    public Employee get(String id) {
+        return employeeDao.get(id).orElse(null);
     }
 
     @Override
     public List<Employee> getAll() {
-        return null;
+        return employeeDao.getAll();
     }
 
     @Override
     public Employee update(Employee employee) {
-        return null;
+        return employeeDao.update(employee);
     }
 
     @Override
-    public boolean delete(String s) {
-        return false;
+    public boolean delete(String id) {
+        return employeeDao.delete(id);
     }
 
     @Override
     public Optional<Employee> findByEmail(String email) {
-        return Optional.empty();
+        return employeeDao.findByEmail(email);
     }
 }
