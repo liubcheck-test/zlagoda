@@ -6,6 +6,7 @@ import helsinki.lib.Service;
 import helsinki.model.Product;
 import helsinki.service.ProductService;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,5 +37,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean delete(Long id) {
         return productDao.delete(id);
+    }
+
+    @Override
+    public Optional<Product> getByProductName(String name) {
+        return productDao.getByProductName(name);
+    }
+
+    @Override
+    public List<Product> getAllSortedByName() {
+        return productDao.getAllSortedByName();
+    }
+
+    @Override
+    public List<Product> getAllByCategorySortedByName(Integer categoryNumber) {
+        return productDao.getAllByCategorySortedByName(categoryNumber);
     }
 }

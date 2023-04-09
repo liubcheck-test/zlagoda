@@ -38,4 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean delete(Integer integer) {
         return categoryDao.delete(integer);
     }
+
+    @Override
+    public List<Category> getAllSortedByName() {
+        return categoryDao.getAllSortedByName();
+    }
 }

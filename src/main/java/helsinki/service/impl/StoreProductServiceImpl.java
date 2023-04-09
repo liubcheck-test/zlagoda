@@ -6,6 +6,7 @@ import helsinki.lib.Service;
 import helsinki.model.StoreProduct;
 import helsinki.service.StoreProductService;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StoreProductServiceImpl implements StoreProductService {
@@ -36,5 +37,30 @@ public class StoreProductServiceImpl implements StoreProductService {
     @Override
     public boolean delete(String s) {
         return storeProductDao.delete(s);
+    }
+
+    @Override
+    public List<StoreProduct> getAllSortedByAmount() {
+        return storeProductDao.getAllSortedByAmount();
+    }
+
+    @Override
+    public Map<String, Object> getStoreProductDataByUpc(String upc) {
+        return storeProductDao.getStoreProductDataByUpc(upc);
+    }
+
+    @Override
+    public Map<String, Object> getStoreProductPriceAndAmountByUpc(String upc) {
+        return storeProductDao.getStoreProductPriceAndAmountByUpc(upc);
+    }
+
+    @Override
+    public List<StoreProduct> getAllPromotionalSortedByAmountAndName() {
+        return storeProductDao.getAllPromotionalSortedByAmountAndName();
+    }
+
+    @Override
+    public List<StoreProduct> getAllNonPromotionalSortedByAmountAndName() {
+        return storeProductDao.getAllNonPromotionalSortedByAmountAndName();
     }
 }

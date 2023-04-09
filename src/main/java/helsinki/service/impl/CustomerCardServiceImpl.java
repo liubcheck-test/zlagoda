@@ -37,4 +37,14 @@ public class CustomerCardServiceImpl implements CustomerCardService {
     public boolean delete(String s) {
         return customerCardDao.delete(s);
     }
+
+    @Override
+    public List<CustomerCard> getAllSortedBySurname() {
+        return customerCardDao.getAllSortedBySurname();
+    }
+
+    @Override
+    public List<CustomerCard> getAllByPercentSortedBySurname(Integer percent) {
+        return customerCardDao.getAllByPercentSortedBySurname(percent);
+    }
 }
