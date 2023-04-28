@@ -4,7 +4,9 @@ import helsinki.dao.StoreProductDao;
 import helsinki.exception.DataProcessingException;
 import helsinki.lib.Dao;
 import helsinki.model.Category;
+import helsinki.model.CategoryMaxPriceProduct;
 import helsinki.model.Product;
+import helsinki.model.ProductStat;
 import helsinki.model.StoreProduct;
 import helsinki.util.ConnectionUtil;
 import java.sql.Connection;
@@ -12,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,6 +230,115 @@ public class StoreProductDaoImpl implements StoreProductDao {
         storeProducts.forEach(storeProduct ->
                 storeProduct.setProduct(getProductByStoreProductUpc(storeProduct.getUpc())));
         return storeProducts;
+    }
+
+    @Override
+    public List<CategoryMaxPriceProduct> requestCategory() {
+        List<CategoryMaxPriceProduct> categoryMaxPriceProducts = new ArrayList<>();
+        String query = "SELECT Category.category_number AS category_number, category_name, Product.id_product as id_product, product_name, selling_price "
+                + "FROM (Store_product INNER JOIN Product ON Store_product.id_product = Product.id_product) "
+                + "INNER JOIN Category ON Category.category_number = Product.category_number "
+                + "WHERE (selling_price, Category.category_number) IN ( "
+                + "SELECT MAX(selling_price), category_number "
+                + "FROM Store_product INNER JOIN Product ON Store_product.id_product = Product.id_product "
+                + "GROUP BY category_number);";
+
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement requestCategoryStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = requestCategoryStatement.executeQuery();
+            while (resultSet.next()) {
+                CategoryMaxPriceProduct categoryMaxPriceProduct = new CategoryMaxPriceProduct();
+                categoryMaxPriceProduct.setCategoryNumber(resultSet.getInt("category_number"));
+                categoryMaxPriceProduct.setCategoryName(resultSet.getString("category_name"));
+                categoryMaxPriceProduct.setIdProduct(resultSet.getLong("id_product"));
+                categoryMaxPriceProduct.setProductName(resultSet.getString("product_name"));
+                categoryMaxPriceProduct.setSellingPrice(resultSet.getBigDecimal("selling_price"));
+                categoryMaxPriceProducts.add(categoryMaxPriceProduct);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't execute requestCategory query. ", e);
+        }
+        return categoryMaxPriceProducts;
+    }
+
+    @Override
+    public List<StoreProduct> requestProduct(LocalDateTime startDate, LocalDateTime endDate) {
+        List<StoreProduct> productDetailsList = new ArrayList<>();
+        String query = "SELECT DISTINCT P.id_product AS id_product, Store_product.UPC AS UPC, P.product_name AS product_name, P.characteristics AS characteristics, C.category_number AS category_number, C.category_name AS category_name "
+                + "FROM (((Product P INNER JOIN Store_product ON P.id_product = Store_product.id_product) "
+                + "INNER JOIN Sale ON Sale.UPC = Store_product.UPC) "
+                + "INNER JOIN `Check` ON `Check`.check_number = Sale.check_number) "
+                + "INNER JOIN Category C ON C.category_number = P.category_number "
+                + "WHERE print_date BETWEEN ? AND ?"
+                + "AND NOT EXISTS ( "
+                + "SELECT Product.id_product "
+                + "FROM (Product INNER JOIN Store_product ON Product.id_product = Store_product.id_product) "
+                + "INNER JOIN Sale ON Sale.UPC = Store_product.UPC "
+                + "WHERE Product.id_product = P.id_product "
+                + "AND Store_product.UPC NOT IN ( "
+                + "SELECT UPC "
+                + "FROM Store_product "
+                + "WHERE promotional_product = 1));";
+
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement requestProductStatement = connection.prepareStatement(query)) {
+            requestProductStatement.setTimestamp(1, Timestamp.valueOf(startDate));
+            requestProductStatement.setTimestamp(2, Timestamp.valueOf(endDate));
+            ResultSet resultSet = requestProductStatement.executeQuery();
+            while (resultSet.next()) {
+                Category category = new Category();
+                category.setCategoryNumber(resultSet.getInt("category_number"));
+                category.setCategoryName(resultSet.getString("category_name"));
+
+                Product productDetails = new Product();
+                productDetails.setId(resultSet.getLong("id_product"));
+                productDetails.setName(resultSet.getString("product_name"));
+                productDetails.setCharacteristics(resultSet.getString("characteristics"));
+                productDetails.setCategory(category);
+
+                StoreProduct storeProduct = new StoreProduct();
+                storeProduct.setProduct(productDetails);
+                storeProduct.setUpc(resultSet.getString("UPC"));
+
+                productDetailsList.add(storeProduct);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't execute requestProduct query. ", e);
+        }
+        return productDetailsList;
+    }
+
+    @Override
+    public List<ProductStat> requestProductStat(LocalDateTime startDate, LocalDateTime endDate) {
+        List<ProductStat> productStats = new ArrayList<>();
+        String query = "SELECT Product.id_product AS id_product, product_name, characteristics, SUM(Sale.product_number) AS total_number, SUM(Sale.product_number * Sale.selling_price) AS total_sum "
+                + "FROM (Product INNER JOIN Store_product ON Product.id_product = Store_product.id_product) "
+                + "INNER JOIN Sale ON Sale.UPC = Store_product.UPC "
+                + "WHERE check_number IN ( "
+                + "SELECT check_number "
+                + "FROM `Check` "
+                + "WHERE print_date BETWEEN ? AND ? "
+                + ") "
+                + "GROUP BY Product.id_product;";
+
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement requestProductStatStatement = connection.prepareStatement(query)) {
+            requestProductStatStatement.setTimestamp(1, Timestamp.valueOf(startDate));
+            requestProductStatStatement.setTimestamp(2, Timestamp.valueOf(endDate));
+            ResultSet resultSet = requestProductStatStatement.executeQuery();
+            while (resultSet.next()) {
+                ProductStat productStat = new ProductStat();
+                productStat.setIdProduct(resultSet.getLong("id_product"));
+                productStat.setProductName(resultSet.getString("product_name"));
+                productStat.setCharacteristics(resultSet.getString("characteristics"));
+                productStat.setTotalNumber(resultSet.getInt("total_number"));
+                productStat.setTotalSum(resultSet.getBigDecimal("total_sum"));
+                productStats.add(productStat);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't execute requestProductStat query. ", e);
+        }
+        return productStats;
     }
 
     private StoreProduct parseStoreProductFromResultSet(ResultSet resultSet) throws SQLException {

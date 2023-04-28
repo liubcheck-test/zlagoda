@@ -4,6 +4,43 @@
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <servlet>
+        <servlet-name>req1</servlet-name>
+        <servlet-class>helsinki.controller.store.GetMaxAndMinPriceForCategoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>req1</servlet-name>
+        <url-pattern>/store_products/find_max_and_min_for_each</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>totalAmountAndSumByPeriodController</servlet-name>
+        <servlet-class>helsinki.controller.store.GetTotalAmountAndSumByPeriodController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>totalAmountAndSumByPeriodController</servlet-name>
+        <url-pattern>/store_products/total_amount_and_sum_by_period</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetProductsOnSaleDuringPeriodController</servlet-name>
+        <servlet-class>helsinki.controller.store.ProductStatsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetProductsOnSaleDuringPeriodController</servlet-name>
+        <url-pattern>/store_products/products_stats</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetCustomerCardsBySumController</servlet-name>
+        <servlet-class>helsinki.controller.customer.GetCustomerCardsBySumController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetCustomerCardsBySumController</servlet-name>
+        <url-pattern>/customer_cards/customer_cards_by_sum</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
         <servlet-name>loginController</servlet-name>
         <servlet-class>helsinki.controller.LoginController</servlet-class>
     </servlet>

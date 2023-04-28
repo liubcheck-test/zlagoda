@@ -32,6 +32,7 @@ public class AuthenticationFilter implements Filter {
         allowedUrls.add("/login");
         allowedUrls.add("/register");
         allowedUrls.add("/index");
+        allowedUrls.add("/logout");
 
         managerUrls = Set.of("/employees/add",
                 "/employees/update",
@@ -94,7 +95,11 @@ public class AuthenticationFilter implements Filter {
                 "/store_products/find-by-upc-for-cashier",
                 "/checks/today",
                 "/checks/find-all-mine-by-period",
-                "/checks/find-by-check-number"
+                "/checks/find-by-check-number",
+                "/store_products/find_max_and_min_for_each",
+                "/store_products/total_amount_and_sum_by_period",
+                "/store_products/products_stats",
+                "/customer_cards/customer_cards_by_sum"
         );
     }
 

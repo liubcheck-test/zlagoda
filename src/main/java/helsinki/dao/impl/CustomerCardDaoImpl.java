@@ -7,6 +7,7 @@ import helsinki.model.CustomerCard;
 import helsinki.model.composite.Address;
 import helsinki.model.composite.FullName;
 import helsinki.util.ConnectionUtil;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -176,6 +177,45 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
                     + "from customer cards database.", e);
         }
         return cards;
+    }
+
+    @Override
+    public List<CustomerCard> requestCustomer(BigDecimal inputSum) {
+        List<CustomerCard> customerCards = new ArrayList<>();
+        String query = "SELECT DISTINCT C.card_number AS card_number, cust_surname, cust_name, cust_patronymic, phone_number, percent, sum_total "
+                + "FROM `Check` INNER JOIN Customer_card AS C ON C.card_number = `Check`.card_number "
+                + "WHERE NOT EXISTS ( "
+                + "SELECT check_number "
+                + "FROM `Check` INNER JOIN Customer_card ON Customer_card.card_number = `Check`.card_number "
+                + "WHERE Customer_card.card_number = C.card_number "
+                + "AND check_number NOT IN ( "
+                + "SELECT check_number "
+                + "FROM `Check` "
+                + "WHERE sum_total >= ? "
+                + "))";
+
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement requestCustomerStatement = connection.prepareStatement(query)) {
+            requestCustomerStatement.setBigDecimal(1, inputSum);
+            ResultSet resultSet = requestCustomerStatement.executeQuery();
+            while (resultSet.next()) {
+                FullName fullName = new FullName(
+                        resultSet.getString("cust_surname"),
+                        resultSet.getString("cust_name"),
+                        resultSet.getString("cust_patronymic")
+                );
+
+                CustomerCard customerCard = new CustomerCard();
+                customerCard.setCardNumber(resultSet.getString("card_number"));
+                customerCard.setCustomerFullName(fullName);
+                customerCard.setPhoneNumber(resultSet.getString("phone_number"));
+                customerCard.setPercent(resultSet.getInt("percent"));
+                customerCards.add(customerCard);
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't execute requestCustomer query. ", e);
+        }
+        return customerCards;
     }
 
     private CustomerCard parseCustomerCardFromResultSet(ResultSet resultSet) throws SQLException {

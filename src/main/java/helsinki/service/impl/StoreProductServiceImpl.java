@@ -3,8 +3,11 @@ package helsinki.service.impl;
 import helsinki.dao.StoreProductDao;
 import helsinki.lib.Inject;
 import helsinki.lib.Service;
+import helsinki.model.CategoryMaxPriceProduct;
+import helsinki.model.ProductStat;
 import helsinki.model.StoreProduct;
 import helsinki.service.StoreProductService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -62,5 +65,20 @@ public class StoreProductServiceImpl implements StoreProductService {
     @Override
     public List<StoreProduct> getAllNonPromotionalSortedByAmountAndName() {
         return storeProductDao.getAllNonPromotionalSortedByAmountAndName();
+    }
+
+    @Override
+    public List<CategoryMaxPriceProduct> requestCategory() {
+        return storeProductDao.requestCategory();
+    }
+
+    @Override
+    public List<StoreProduct> requestProduct(LocalDateTime startDate, LocalDateTime endDate) {
+        return storeProductDao.requestProduct(startDate, endDate);
+    }
+
+    @Override
+    public List<ProductStat> requestProductStat(LocalDateTime startDate, LocalDateTime endDate) {
+        return storeProductDao.requestProductStat(startDate, endDate);
     }
 }

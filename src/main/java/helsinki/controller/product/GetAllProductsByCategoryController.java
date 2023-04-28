@@ -28,6 +28,10 @@ public class GetAllProductsByCategoryController extends HttpServlet {
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         String categoryName = req.getParameter("category");
+        List<String> categories = categoryService.getAllSortedByName().stream()
+                .map(Category::getCategoryName)
+                .toList();
+        req.setAttribute("categories", categories);
         if (categoryName != null) {
             List<Product> products = productService.getAllByCategorySortedByName(categoryName);
             if (products != null || products.isEmpty()) {
@@ -36,10 +40,6 @@ public class GetAllProductsByCategoryController extends HttpServlet {
                 req.setAttribute("errorMessage", "No products with category " + categoryName + " found.");
             }
         }
-        List<String> categories = categoryService.getAllSortedByName().stream()
-                .map(Category::getCategoryName)
-                .toList();
-        req.setAttribute("categories", categories);
         req.getRequestDispatcher("/WEB-INF/views/products/find_by_category.jsp").forward(req, resp);
     }
 

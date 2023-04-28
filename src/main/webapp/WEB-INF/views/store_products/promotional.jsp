@@ -13,6 +13,7 @@
 <body>
 <h1 class="table_dark">All promotional store products:</h1>
 <table border="1" class="table_dark">
+    <c:set var="userRole" value="${sessionScope.chosenEmployee.employeeRole.name}" />
     <tr>
         <th>UPC</th>
         <th>UPC Promotional</th>
@@ -41,12 +42,14 @@
             <td>
                 <c:out value="${storeProduct.isPromotional}"/>
             </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/store_products/update?upc=${storeProduct.upc}">UPDATE</a>
-            </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/store_products/delete?upc=${storeProduct.upc}">DELETE</a>
-            </td>
+            <c:if test="${userRole eq 'Manager'}">
+                <td>
+                    <a href="${pageContext.request.contextPath}/store_products/update?upc=${storeProduct.upc}">UPDATE</a>
+                </td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/store_products/delete?upc=${storeProduct.upc}">DELETE</a>
+                </td>
+            </c:if>
         </tr>
     </c:forEach>
 </table>

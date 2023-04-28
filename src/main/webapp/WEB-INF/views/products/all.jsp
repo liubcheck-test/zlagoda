@@ -11,6 +11,7 @@
 <body>
 <h1 class="table_dark">All products:</h1>
 <table border="1" class="table_dark">
+<c:set var="userRole" value="${sessionScope.chosenEmployee.employeeRole.name}" />
     <tr>
         <th>ID</th>
         <th>Category</th>
@@ -31,12 +32,14 @@
             <td>
                 <c:out value="${product.characteristics}"/>
             </td>
+            <c:if test="${userRole eq 'Manager'}">
             <td>
                 <a href="${pageContext.request.contextPath}/products/update?id=${product.id}">UPDATE</a>
             </td>
             <td>
                 <a href="${pageContext.request.contextPath}/products/delete?id=${product.id}">DELETE</a>
             </td>
+            </c:if>
         </tr>
     </c:forEach>
 </table>

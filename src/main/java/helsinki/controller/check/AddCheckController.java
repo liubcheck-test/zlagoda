@@ -60,7 +60,7 @@ public class AddCheckController extends HttpServlet {
 
         saveSalesAndUpdateStoreProducts(req, check);
 
-        resp.sendRedirect(req.getContextPath() + "/checks");
+        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }
 
     private boolean validateAmounts(HttpServletRequest req) {

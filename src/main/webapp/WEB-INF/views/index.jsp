@@ -58,6 +58,10 @@
         <tr><td><a href="${pageContext.request.contextPath}/checks/find-by-check-number">Find Check By Certain Check Number</a></td></tr>
         <tr><td><a href="${pageContext.request.contextPath}/employees/me">Get All My Info</a></td></tr>
     </c:if>
+    <tr><td><a href="${pageContext.request.contextPath}/store_products/find_max_and_min_for_each">Find the product with the highest price in the store for each category</a></td></tr>
+    <tr><td><a href="${pageContext.request.contextPath}/store_products/total_amount_and_sum_by_period">For each product, get the total quantity and amount of sales for a certain period of time.</a></td></tr>
+    <tr><td><a href="${pageContext.request.contextPath}/store_products/products_stats">Get information about products that were purchased only on sale during a certain period of time.</a></td></tr>
+    <tr><td><a href="${pageContext.request.contextPath}/customer_cards/customer_cards_by_sum">Get information about customers who bought only for an amount greater than the entered amount.</a></td></tr>
 </table>
 </body>
 </html>

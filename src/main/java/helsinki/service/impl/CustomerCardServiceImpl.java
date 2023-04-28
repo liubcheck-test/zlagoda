@@ -5,6 +5,7 @@ import helsinki.lib.Inject;
 import helsinki.lib.Service;
 import helsinki.model.CustomerCard;
 import helsinki.service.CustomerCardService;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -51,5 +52,10 @@ public class CustomerCardServiceImpl implements CustomerCardService {
     @Override
     public List<CustomerCard> getAllByLastName(String lastName) {
         return customerCardDao.getAllByLastName(lastName);
+    }
+
+    @Override
+    public List<CustomerCard> requestCustomer(BigDecimal inputSum) {
+        return customerCardDao.requestCustomer(inputSum);
     }
 }
