@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="en_US" />
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <style>
@@ -6,7 +8,7 @@
 </style>
 <html>
 <head>
-    <title>All employees</title>
+    <title>All Employees</title>
 </head>
 <body>
 <h1 class="table_dark">All employees:</h1>
@@ -21,42 +23,41 @@
         <th>Phone number</th>
         <th>Address</th>
         <th>Email</th>
-        <th>Delete</th>
     </tr>
-    <c:forEach var="employee" items="${employees}">
+    <c:forEach var="cashier" items="${employees}">
         <tr>
             <td>
-                <c:out value="${employee.id}"/>
+                <c:out value="${cashier.id}"/>
             </td>
             <td>
-                <c:out value="${employee.employeeFullName}"/>
+                <c:out value="${cashier.employeeFullName}"/>
             </td>
             <td>
-                <c:out value="${employee.employeeRole.name}"/>
+                <c:out value="${cashier.employeeRole.name}"/>
             </td>
             <td>
-                <c:out value="${employee.salary}"/>
+                <fmt:formatNumber value="${cashier.salary}" pattern="#.00"/>
             </td>
             <td>
-                <c:out value="${employee.dateOfBirth}"/>
+                <c:out value="${cashier.dateOfBirth}"/>
             </td>
             <td>
-                <c:out value="${employee.dateOfStart}"/>
+                <c:out value="${cashier.dateOfStart}"/>
             </td>
             <td>
-                <c:out value="${employee.phoneNumber}"/>
+                <c:out value="${cashier.phoneNumber}"/>
             </td>
             <td>
-                <c:out value="${employee.address}"/>
+                <c:out value="${cashier.address}"/>
             </td>
             <td>
-                <c:out value="${employee.email}"/>
+                <c:out value="${cashier.email}"/>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/employees/update?id=${employee.id}">UPDATE</a>
+                <a href="${pageContext.request.contextPath}/employees/update?id=${cashier.id}">UPDATE</a>
             </td>
             <td>
-                <a href="${pageContext.request.contextPath}/employees/delete?id=${employee.id}">DELETE</a>
+                <a href="${pageContext.request.contextPath}/employees/delete?id=${cashier.id}">DELETE</a>
             </td>
         </tr>
     </c:forEach>

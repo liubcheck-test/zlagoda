@@ -25,9 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Dao
 public class CheckDaoImpl implements CheckDao {
+    private final Random random = new Random();
+
     @Override
     public Check save(Check check) {
         String query = "INSERT INTO `Check` (check_number, id_employee, "
@@ -36,13 +39,16 @@ public class CheckDaoImpl implements CheckDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement saveCheckStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
-            saveCheckStatement.setString(1, check.getCheckNumber());
+            long checkNumberLong = Math.abs(random.nextLong() % 1000000000L);
+            String checkNumber = String.format("%09d", checkNumberLong);
+            saveCheckStatement.setString(1, checkNumber);
             saveCheckStatement.setString(2, check.getEmployee().getId());
-            saveCheckStatement.setString(3, check.getCard().getCardNumber());
+            saveCheckStatement.setString(3, check.getCustomerCard().getCardNumber());
             saveCheckStatement.setDate(4, Date.valueOf(check.getPrintDate().toLocalDate()));
             saveCheckStatement.setBigDecimal(5, check.getSumTotal());
             saveCheckStatement.setBigDecimal(6, check.getVat());
             saveCheckStatement.executeUpdate();
+            check.setCheckNumber(checkNumber);
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't create " + check + ". ", e);
         }
@@ -65,7 +71,7 @@ public class CheckDaoImpl implements CheckDao {
         }
         if (check != null) {
             check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber()));
-            check.setCard(getCardByCheckNumber(check.getCheckNumber()));
+            check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber()));
         }
         return Optional.ofNullable(check);
     }
@@ -87,7 +93,7 @@ public class CheckDaoImpl implements CheckDao {
         checks.forEach(check ->
                 check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
         checks.forEach(check ->
-                check.setCard(getCardByCheckNumber(check.getCheckNumber())));
+                check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber())));
         return checks;
     }
 
@@ -99,7 +105,7 @@ public class CheckDaoImpl implements CheckDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement updateCheckStatement = connection.prepareStatement(query)) {
             updateCheckStatement.setString(1, check.getEmployee().getId());
-            updateCheckStatement.setString(2, check.getCard().getCardNumber());
+            updateCheckStatement.setString(2, check.getCustomerCard().getCardNumber());
             updateCheckStatement.setDate(3,
                     Date.valueOf(check.getPrintDate().toLocalDate()));
             updateCheckStatement.setBigDecimal(4, check.getSumTotal());
@@ -149,7 +155,7 @@ public class CheckDaoImpl implements CheckDao {
         }
         if (check != null) {
             check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber()));
-            check.setCard(getCardByCheckNumber(check.getCheckNumber()));
+            check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber()));
             checkAllInfo.put("check", check);
         }
         return checkAllInfo;
@@ -176,14 +182,38 @@ public class CheckDaoImpl implements CheckDao {
         checks.forEach(check ->
                 check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
         checks.forEach(check ->
-                check.setCard(getCardByCheckNumber(check.getCheckNumber())));
+                check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber())));
+        return checks;
+    }
+
+    @Override
+    public List<Check> getAllChecksByCashier(String cashierId) {
+        String query = "SELECT * FROM `Check` WHERE id_employee = ?";
+        List<Check> checks = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
+            getAllChecksStatement.setString(1, cashierId);
+            ResultSet resultSet = getAllChecksStatement.executeQuery();
+            while (resultSet.next()) {
+                checks.add(parseCheckFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of checks "
+                    + "from checks database.", e);
+        }
+        checks.forEach(check ->
+                check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
+        checks.forEach(check ->
+                check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber())));
         return checks;
     }
 
     @Override
     public List<Check> getAllChecksByCashierAndPeriod(String employeeId,
                                                       LocalDateTime from, LocalDateTime to) {
-        String query = "SELECT * FROM `Check` WHERE id_employee = ? AND print_date BETWEEN ? AND ?";
+        String query = "SELECT * FROM `Check` "
+                + "WHERE id_employee = ? AND print_date BETWEEN ? AND ? "
+                + "ORDER BY print_date";
         List<Check> checks = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
@@ -201,13 +231,15 @@ public class CheckDaoImpl implements CheckDao {
         checks.forEach(check ->
                 check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
         checks.forEach(check ->
-                check.setCard(getCardByCheckNumber(check.getCheckNumber())));
+                check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber())));
         return checks;
     }
 
     @Override
     public List<Check> getAllChecksByPeriod(LocalDateTime from, LocalDateTime to) {
-        String query = "SELECT * FROM `Check` WHERE print_date BETWEEN ? AND ?";
+        String query = "SELECT * FROM `Check` "
+                + "WHERE print_date BETWEEN ? AND ?"
+                + "ORDER BY print_date";
         List<Check> checks = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllChecksStatement = connection.prepareStatement(query)) {
@@ -224,7 +256,7 @@ public class CheckDaoImpl implements CheckDao {
         checks.forEach(check ->
                 check.setEmployee(getEmployeeByCheckNumber(check.getCheckNumber())));
         checks.forEach(check ->
-                check.setCard(getCardByCheckNumber(check.getCheckNumber())));
+                check.setCustomerCard(getCardByCheckNumber(check.getCheckNumber())));
         return checks;
     }
 

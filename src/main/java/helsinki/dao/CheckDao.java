@@ -11,6 +11,8 @@ public interface CheckDao extends BasicDao<Check, String> {
 
     List<Check> getAllByToday(String employeeId);
 
+    List<Check> getAllChecksByCashier(String cashierId);
+
     List<Check> getAllChecksByPeriod(LocalDateTime from, LocalDateTime to);
 
     List<Check> getAllChecksByCashierAndPeriod(String employeeId,

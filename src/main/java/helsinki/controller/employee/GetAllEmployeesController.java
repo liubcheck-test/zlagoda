@@ -19,7 +19,7 @@ public class GetAllEmployeesController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        List<Employee> employees = employeeService.getAll();
+        List<Employee> employees = employeeService.getAllSortedBySurname();
         req.setAttribute("employees", employees);
         req.getRequestDispatcher("/WEB-INF/views/employees/all.jsp").forward(req, resp);
     }

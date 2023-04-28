@@ -1,17 +1,18 @@
 package helsinki.service;
 
 import helsinki.model.Check;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public interface CheckService extends BasicService<Check, String> {
-
     Map<String, Object> getAllInfoByNumber(String number);
 
     List<Check> getAllByToday(String employeeId);
+
+    List<Check> getAllChecksByCashier(String cashierId);
 
     List<Check> getAllChecksByPeriod(LocalDateTime from, LocalDateTime to);
 

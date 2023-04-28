@@ -17,17 +17,20 @@ public class UpdateCategoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Integer categoryId = Integer.parseInt(req.getParameter("category_number"));
-        Category category = categoryService.get(categoryId);
+        req.setCharacterEncoding("UTF-8");
+        Integer categoryNumber = Integer.parseInt(req.getParameter("categoryNumber"));
+        Category category = categoryService.get(categoryNumber);
         req.setAttribute("category", category);
         req.getRequestDispatcher("/WEB-INF/views/categories/update.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+        req.setCharacterEncoding("UTF-8");
+        Integer categoryNumber = Integer.parseInt(req.getParameter("category_number"));
         String categoryName = req.getParameter("category_name");
-        Category category = new Category(null, categoryName);
+        Category category = new Category(categoryNumber, categoryName);
         categoryService.update(category);
         resp.sendRedirect(req.getContextPath() + "/categories");
     }

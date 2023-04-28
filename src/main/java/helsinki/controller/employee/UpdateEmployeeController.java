@@ -1,5 +1,6 @@
 package helsinki.controller.employee;
 
+import helsinki.exception.IncorrectPasswordException;
 import helsinki.lib.Injector;
 import helsinki.model.Employee;
 import helsinki.model.composite.Address;
@@ -31,7 +32,7 @@ public class UpdateEmployeeController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+            throws IOException, ServletException {
         req.setCharacterEncoding("UTF-8");
         String id = req.getParameter("id");
         FullName fullName = new FullName(
@@ -40,7 +41,7 @@ public class UpdateEmployeeController extends HttpServlet {
                 req.getParameter("empl_patronymic")
         );
         Employee.Role role = Employee.Role.valueOf(req.getParameter("empl_role"));
-        BigDecimal salary = BigDecimal.valueOf(Long.parseLong(req.getParameter("salary")));
+        BigDecimal salary = new BigDecimal(req.getParameter("salary"));
         LocalDate dateOfBirth = LocalDate.parse(req.getParameter("date_of_birth"));
         LocalDate dateOfStart = LocalDate.parse(req.getParameter("date_of_start"));
         String phoneNumber = req.getParameter("phone_number");
@@ -53,7 +54,14 @@ public class UpdateEmployeeController extends HttpServlet {
         String password = req.getParameter("password");
         Employee employee = new Employee(id, fullName, role, salary,
                 dateOfBirth, dateOfStart, phoneNumber, address, email, password);
-        employeeService.update(employee);
-        resp.sendRedirect(req.getContextPath() + "/employees");
+        try {
+            employeeService.update(employee);
+            resp.sendRedirect(req.getContextPath() + "/employees");
+        } catch (IncorrectPasswordException e) {
+            req.setAttribute("employee", employee);
+            req.setAttribute("employeeRoles", Employee.Role.values());
+            req.setAttribute("message", "Incorrect password, please try again.");
+            req.getRequestDispatcher("/WEB-INF/views/employees/update.jsp").forward(req, resp);
+        }
     }
 }

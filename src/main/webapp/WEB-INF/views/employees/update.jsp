@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="en_US" />
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <style>
@@ -11,6 +13,12 @@
 <body>
 <form method="post" id="employee" action="${pageContext.request.contextPath}/employees/update"></form>
 <h1 class="table_dark">Update employee:</h1>
+<c:if test="${not empty param.message}">
+    <div class="alert alert-danger">${param.message}</div>
+</c:if>
+<c:if test="${not empty message}">
+    <div class="alert alert-danger">${message}</div>
+</c:if>
 <table border="1" class="table_dark">
     <tr>
         <th>ID</th>
@@ -26,7 +34,7 @@
         <th>Street</th>
         <th>Zip code</th>
         <th>Email</th>
-        <th>Password</th>
+        <th>Enter Password</th>
     </tr>
     <tr>
         <td>
@@ -49,7 +57,8 @@
             </select>
         </td>
         <td>
-            <input type="number" name="salary" form="employee" value="${employee.salary}" required>
+            <input type="text" name="salary" form="employee" value="<fmt:formatNumber value='${employee.salary}' pattern='#.00' currencySymbol='.'/>"
+                   required pattern="^\d+(\.\d{2})?$" title="Please enter a valid value in the format #.00">
         </td>
         <td>
             <input type="date" name="date_of_birth" form="employee" value="${employee.dateOfBirth}" required>
@@ -73,7 +82,7 @@
             <input type="text" name="email" form="employee" value="${employee.email}" required>
         </td>
         <td>
-            <input type="password" name="password" form="employee" value="${employee.password}" required>
+            <input type="password" name="password" form="employee" required>
         </td>
         <td>
             <input type="submit" name="update" form="employee">

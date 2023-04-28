@@ -18,7 +18,8 @@ public class GetAllCategoriesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        List<Category> categories = categoryService.getAll();
+        req.setCharacterEncoding("UTF-8");
+        List<Category> categories = categoryService.getAllSortedByName();
         req.setAttribute("categories", categories);
         req.getRequestDispatcher("/WEB-INF/views/categories/all.jsp").forward(req, resp);
     }

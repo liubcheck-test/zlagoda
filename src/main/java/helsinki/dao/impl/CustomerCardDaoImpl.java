@@ -15,9 +15,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Dao
 public class CustomerCardDaoImpl implements CustomerCardDao {
+    private final Random random = new Random();
+
     @Override
     public CustomerCard save(CustomerCard card) {
         String query = "INSERT INTO Customer_Card (card_number, cust_surname, cust_name, "
@@ -26,7 +29,9 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement saveCardStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
-            saveCardStatement.setString(1, card.getCardNumber());
+            long cardNumberLong = Math.abs(random.nextLong() % 10000000000000L);
+            String cardNumber = String.format("%012d", cardNumberLong);
+            saveCardStatement.setString(1, cardNumber);
             saveCardStatement.setString(2, card.getCustomerFullName().getSurname());
             saveCardStatement.setString(3, card.getCustomerFullName().getName());
             saveCardStatement.setString(4, card.getCustomerFullName().getPatronymic());
@@ -36,6 +41,10 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
             saveCardStatement.setString(8, card.getCustomerAddress().getZipCode());
             saveCardStatement.setInt(9, card.getPercent());
             saveCardStatement.executeUpdate();
+            ResultSet resultSet = saveCardStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                card.setCardNumber(resultSet.getObject(1, String.class));
+            }
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't create " + card + ". ", e);
         }
@@ -92,6 +101,7 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
             updateCardStatement.setString(6, card.getCustomerAddress().getStreet());
             updateCardStatement.setString(7, card.getCustomerAddress().getZipCode());
             updateCardStatement.setInt(8, card.getPercent());
+            updateCardStatement.setString(9, card.getCardNumber());
             updateCardStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't update "
@@ -137,6 +147,26 @@ public class CustomerCardDaoImpl implements CustomerCardDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
             getAllCardsStatement.setInt(1, percent);
+            ResultSet resultSet = getAllCardsStatement.executeQuery();
+            while (resultSet.next()) {
+                cards.add(parseCustomerCardFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Couldn't get a list of customer cards "
+                    + "from customer cards database.", e);
+        }
+        return cards;
+    }
+
+    @Override
+    public List<CustomerCard> getAllByLastName(String lastName) {
+        String query = "SELECT * FROM Customer_Card "
+                + "WHERE cust_surname LIKE ? "
+                + "ORDER BY cust_surname, cust_name, cust_patronymic";
+        List<CustomerCard> cards = new ArrayList<>();
+        try (Connection connection = ConnectionUtil.getConnection();
+             PreparedStatement getAllCardsStatement = connection.prepareStatement(query)) {
+            getAllCardsStatement.setString(1, "%" + lastName + "%");
             ResultSet resultSet = getAllCardsStatement.executeQuery();
             while (resultSet.next()) {
                 cards.add(parseCustomerCardFromResultSet(resultSet));

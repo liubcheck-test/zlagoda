@@ -30,6 +30,7 @@ public class LoginController extends HttpServlet {
         try {
             Employee employee = authenticationService.login(email, password);
             HttpSession session = req.getSession();
+            session.setAttribute("chosenEmployee", employee);
             session.setAttribute("id_employee", employee.getId());
             resp.sendRedirect(req.getContextPath() + "/index");
         } catch (AuthenticationException e) {

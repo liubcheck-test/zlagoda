@@ -12,4 +12,8 @@ public class Category {
     private Integer categoryNumber;
     @NotEmpty
     private String categoryName;
+
+    public String toString() {
+        return categoryNumber + " " + categoryName;
+    }
 }

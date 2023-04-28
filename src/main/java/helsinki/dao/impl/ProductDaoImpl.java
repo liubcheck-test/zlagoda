@@ -88,6 +88,7 @@ public class ProductDaoImpl implements ProductDao {
             updateProductStatement.setInt(1, product.getCategory().getCategoryNumber());
             updateProductStatement.setString(2, product.getName());
             updateProductStatement.setString(3, product.getCharacteristics());
+            updateProductStatement.setLong(4, product.getId());
             updateProductStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't update "
@@ -109,23 +110,23 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Optional<Product> getByProductName(String name) {
+    public List<Product> getProductsByName(String name) {
         String query = "SELECT id_product, product.category_number, category_name, "
                 + "product_name, characteristics FROM product "
                 + "JOIN category ON product.category_number = category.category_number "
-                + "WHERE product_name = ?";
-        Product product = null;
+                + "WHERE product_name LIKE ?";
+        List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-                PreparedStatement getProductStatement = connection.prepareStatement(query)) {
-            getProductStatement.setString(1, name);
+             PreparedStatement getProductStatement = connection.prepareStatement(query)) {
+            getProductStatement.setString(1, "%" + name + "%");
             ResultSet resultSet = getProductStatement.executeQuery();
-            if (resultSet.next()) {
-                product = parseProductFromResultSet(resultSet);
+            while (resultSet.next()) {
+                products.add(parseProductFromResultSet(resultSet));
             }
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't get product by name " + name, e);
+            throw new DataProcessingException("Couldn't get products containing name " + name, e);
         }
-        return Optional.ofNullable(product);
+        return products;
     }
 
     @Override
@@ -149,16 +150,16 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getAllByCategorySortedByName(Integer categoryNumber) {
+    public List<Product> getAllByCategorySortedByName(String categoryName) {
         String query = "SELECT id_product, product.category_number, category_name, "
                 + "product_name, characteristics FROM product "
                 + "JOIN category ON product.category_number = category.category_number "
-                + "WHERE product.category_number = ?"
+                + "WHERE category.category_name = ? "
                 + "ORDER BY product_name";
         List<Product> products = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
-            getAllProductsStatement.setInt(1, categoryNumber);
+            getAllProductsStatement.setString(1, categoryName);
             ResultSet resultSet = getAllProductsStatement.executeQuery();
             while (resultSet.next()) {
                 products.add(parseProductFromResultSet(resultSet));

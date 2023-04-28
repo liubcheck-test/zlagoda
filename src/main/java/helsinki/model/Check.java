@@ -15,7 +15,7 @@ public class Check {
     @Pattern(regexp = "\\d{9}")
     private String checkNumber;
     private Employee employee;
-    private CustomerCard card;
+    private CustomerCard customerCard;
     @PastOrPresent
     private LocalDateTime printDate;
     @Positive
@@ -23,8 +23,11 @@ public class Check {
     @Positive
     private BigDecimal vat;
 
-    public Check(String number, LocalDateTime printDate, BigDecimal sumTotal) {
+    public Check(String number, Employee employee, CustomerCard customerCard,
+                 LocalDateTime printDate, BigDecimal sumTotal) {
         this.checkNumber = number;
+        this.employee = employee;
+        this.customerCard = customerCard;
         this.printDate = printDate;
         this.sumTotal = sumTotal;
         this.vat = sumTotal.multiply(BigDecimal.valueOf(0.2)).setScale(2, RoundingMode.HALF_UP);

@@ -15,4 +15,8 @@ public class Product {
     private String name;
     @NotEmpty
     private String characteristics;
+
+    public String toString() {
+        return name;
+    }
 }

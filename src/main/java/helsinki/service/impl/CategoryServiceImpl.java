@@ -1,7 +1,6 @@
 package helsinki.service.impl;
 
 import helsinki.dao.CategoryDao;
-import helsinki.dao.EmployeeDao;
 import helsinki.lib.Inject;
 import helsinki.lib.Service;
 import helsinki.model.Category;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
     @Inject
     private CategoryDao categoryDao;
 

@@ -22,6 +22,24 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>registerController</servlet-name>
+        <servlet-class>helsinki.controller.RegisterController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>registerController</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>accessDenied</servlet-name>
+        <servlet-class>helsinki.controller.AccessDeniedController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>accessDenied</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>index</servlet-name>
         <servlet-class>helsinki.controller.MainController</servlet-class>
     </servlet>
@@ -35,6 +53,249 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>report</servlet-name>
+        <servlet-class>helsinki.controller.ReportController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>report</servlet-name>
+        <url-pattern>/report</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportEmployees</servlet-name>
+        <servlet-class>helsinki.controller.employee.ReportEmployeesController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportEmployees</servlet-name>
+        <url-pattern>/report/employees</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportCategories</servlet-name>
+        <servlet-class>helsinki.controller.category.ReportCategoriesController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportCategories</servlet-name>
+        <url-pattern>/report/categories</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportProducts</servlet-name>
+        <servlet-class>helsinki.controller.product.ReportProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportProducts</servlet-name>
+        <url-pattern>/report/products</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportStoreProducts</servlet-name>
+        <servlet-class>helsinki.controller.store.ReportStoreProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportStoreProducts</servlet-name>
+        <url-pattern>/report/store_products</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportCustomerCards</servlet-name>
+        <servlet-class>helsinki.controller.customer.ReportCustomerCardsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportCustomerCards</servlet-name>
+        <url-pattern>/report/customer_cards</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reportChecks</servlet-name>
+        <servlet-class>helsinki.controller.check.ReportChecksController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reportChecks</servlet-name>
+        <url-pattern>/report/checks</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addCategory</servlet-name>
+        <servlet-class>helsinki.controller.category.AddCategoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addCategory</servlet-name>
+        <url-pattern>/categories/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllCategories</servlet-name>
+        <servlet-class>helsinki.controller.category.GetAllCategoriesController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllCategories</servlet-name>
+        <url-pattern>/categories</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateCategory</servlet-name>
+        <servlet-class>helsinki.controller.category.UpdateCategoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateCategory</servlet-name>
+        <url-pattern>/categories/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteCategory</servlet-name>
+        <servlet-class>helsinki.controller.category.DeleteCategoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteCategory</servlet-name>
+        <url-pattern>/categories/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addCheck</servlet-name>
+        <servlet-class>helsinki.controller.check.AddCheckController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addCheck</servlet-name>
+        <url-pattern>/checks/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getCheck</servlet-name>
+        <servlet-class>helsinki.controller.check.GetCheckController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getCheck</servlet-name>
+        <url-pattern>/checks/get</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getCheckByCheckNumber</servlet-name>
+        <servlet-class>helsinki.controller.check.GetCheckInfoByCheckNumberController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getCheckByCheckNumber</servlet-name>
+        <url-pattern>/checks/find-by-check-number</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllChecks</servlet-name>
+        <servlet-class>helsinki.controller.check.GetAllChecksController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllChecks</servlet-name>
+        <url-pattern>/checks</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllTodayChecksByCashier</servlet-name>
+        <servlet-class>helsinki.controller.check.GetAllTodayChecksByCashierController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllTodayChecksByCashier</servlet-name>
+        <url-pattern>/checks/today</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllMyChecksByPeriod</servlet-name>
+        <servlet-class>helsinki.controller.check.GetAllMyChecksByPeriodController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllMyChecksByPeriod</servlet-name>
+        <url-pattern>/checks/find-all-mine-by-period</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllChecksByCashierAndPeriod</servlet-name>
+        <servlet-class>helsinki.controller.check.GetAllChecksByCashierAndPeriodController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllChecksByCashierAndPeriod</servlet-name>
+        <url-pattern>/checks/find-all-by-cashier-and-period</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllChecksByPeriod</servlet-name>
+        <servlet-class>helsinki.controller.check.GetAllChecksByPeriodController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllChecksByPeriod</servlet-name>
+        <url-pattern>/checks/find-all-by-period</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateCheck</servlet-name>
+        <servlet-class>helsinki.controller.check.UpdateCheckController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateCheck</servlet-name>
+        <url-pattern>/checks/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteCheck</servlet-name>
+        <servlet-class>helsinki.controller.check.DeleteCheckController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteCheck</servlet-name>
+        <url-pattern>/checks/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addCustomerCard</servlet-name>
+        <servlet-class>helsinki.controller.customer.AddCustomerCardController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addCustomerCard</servlet-name>
+        <url-pattern>/customer_cards/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllCustomerCards</servlet-name>
+        <servlet-class>helsinki.controller.customer.GetAllCustomerCardsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllCustomerCards</servlet-name>
+        <url-pattern>/customer_cards</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>findCustomerCardByLastName</servlet-name>
+        <servlet-class>helsinki.controller.customer.GetCustomerCardsByLastNameController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>findCustomerCardByLastName</servlet-name>
+        <url-pattern>/customer_cards/find-by-last-name</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>findCustomerCardByPercent</servlet-name>
+        <servlet-class>helsinki.controller.customer.GetCustomerCardsByPercentController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>findCustomerCardByPercent</servlet-name>
+        <url-pattern>/customer_cards/find-by-percent</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateCustomerCard</servlet-name>
+        <servlet-class>helsinki.controller.customer.UpdateCustomerCardController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateCustomerCard</servlet-name>
+        <url-pattern>/customer_cards/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteCustomerCard</servlet-name>
+        <servlet-class>helsinki.controller.customer.DeleteCustomerCardController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteCustomerCard</servlet-name>
+        <url-pattern>/customer_cards/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>addEmployee</servlet-name>
         <servlet-class>helsinki.controller.employee.AddEmployeeController</servlet-class>
     </servlet>
@@ -44,12 +305,39 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>getAllInfoAboutMe</servlet-name>
+        <servlet-class>helsinki.controller.employee.GetAllInfoAboutMeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllInfoAboutMe</servlet-name>
+        <url-pattern>/employees/me</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>getAllEmployees</servlet-name>
         <servlet-class>helsinki.controller.employee.GetAllEmployeesController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>getAllEmployees</servlet-name>
         <url-pattern>/employees</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllCashiers</servlet-name>
+        <servlet-class>helsinki.controller.employee.GetAllCashiersController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllCashiers</servlet-name>
+        <url-pattern>/employees/cashiers</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>findEmployeePhoneAndAddressBySurname</servlet-name>
+        <servlet-class>helsinki.controller.employee.GetPhoneAndAddressBySurnameController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>findEmployeePhoneAndAddressBySurname</servlet-name>
+        <url-pattern>/employees/find-phone-and-address</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -69,4 +357,166 @@
         <servlet-name>deleteEmployee</servlet-name>
         <url-pattern>/employees/delete</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addProduct</servlet-name>
+        <servlet-class>helsinki.controller.product.AddProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addProduct</servlet-name>
+        <url-pattern>/products/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getProductsByName</servlet-name>
+        <servlet-class>helsinki.controller.product.GetProductsByNameController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getProductsByName</servlet-name>
+        <url-pattern>/products/find-by-name</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllProducts</servlet-name>
+        <servlet-class>helsinki.controller.product.GetAllProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllProducts</servlet-name>
+        <url-pattern>/products</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllProductsByCategory</servlet-name>
+        <servlet-class>helsinki.controller.product.GetAllProductsByCategoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllProductsByCategory</servlet-name>
+        <url-pattern>/products/find-by-category</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateProduct</servlet-name>
+        <servlet-class>helsinki.controller.product.UpdateProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateProduct</servlet-name>
+        <url-pattern>/products/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteProduct</servlet-name>
+        <servlet-class>helsinki.controller.product.DeleteProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteProduct</servlet-name>
+        <url-pattern>/products/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>addStoreProduct</servlet-name>
+        <servlet-class>helsinki.controller.store.AddStoreProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addStoreProduct</servlet-name>
+        <url-pattern>/store_products/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllStoreProducts</servlet-name>
+        <servlet-class>helsinki.controller.store.GetAllStoreProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllStoreProducts</servlet-name>
+        <url-pattern>/store_products</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllPromotionalStoreProducts</servlet-name>
+        <servlet-class>helsinki.controller.store.GetAllPromotionalStoreProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllPromotionalStoreProducts</servlet-name>
+        <url-pattern>/store_products/promotional</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getAllNonPromotionalStoreProducts</servlet-name>
+        <servlet-class>helsinki.controller.store.GetAllNonPromotionalStoreProductsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getAllNonPromotionalStoreProducts</servlet-name>
+        <url-pattern>/store_products/non-promotional</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getStoreProductTotalSoldSumByCashier</servlet-name>
+        <servlet-class>helsinki.controller.store.GetTotalSoldSumByCashierController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getStoreProductTotalSoldSumByCashier</servlet-name>
+        <url-pattern>/store_products/find-total-sold-sum-by-cashier</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getStoreProductTotalSoldSum</servlet-name>
+        <servlet-class>helsinki.controller.store.GetTotalSoldSumController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getStoreProductTotalSoldSum</servlet-name>
+        <url-pattern>/store_products/find-total-sold-sum</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getStoreProductTotalSoldAmount</servlet-name>
+        <servlet-class>helsinki.controller.store.GetStoreProductTotalAmountByPeriodController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getStoreProductTotalSoldAmount</servlet-name>
+        <url-pattern>/store_products/find-total-sold-amount</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getStoreProductByUpc</servlet-name>
+        <servlet-class>helsinki.controller.store.GetStoreProductByUpcController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getStoreProductByUpc</servlet-name>
+        <url-pattern>/store_products/find-by-upc</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>getStoreProductByUpcForCashier</servlet-name>
+        <servlet-class>helsinki.controller.store.GetStoreProductByUpcForCashierController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getStoreProductByUpcForCashier</servlet-name>
+        <url-pattern>/store_products/find-by-upc-for-cashier</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateStoreProduct</servlet-name>
+        <servlet-class>helsinki.controller.store.UpdateStoreProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateStoreProduct</servlet-name>
+        <url-pattern>/store_products/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteStoreProduct</servlet-name>
+        <servlet-class>helsinki.controller.store.DeleteStoreProductController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteStoreProduct</servlet-name>
+        <url-pattern>/store_products/delete</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>authenticationFilter</filter-name>
+        <filter-class>helsinki.web.filter.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>authenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

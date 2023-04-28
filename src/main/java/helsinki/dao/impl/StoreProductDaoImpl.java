@@ -17,9 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Dao
 public class StoreProductDaoImpl implements StoreProductDao {
+    private final Random random = new Random();
+
     @Override
     public StoreProduct save(StoreProduct product) {
         String query = "INSERT INTO Store_Product (UPC, UPC_prom, id_product, selling_price, "
@@ -28,13 +31,20 @@ public class StoreProductDaoImpl implements StoreProductDao {
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement saveProductStatement = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS)) {
-            saveProductStatement.setString(1, product.getUpc());
-            saveProductStatement.setString(2, product.getUpcProm());
+            long upcLong = Math.abs(random.nextLong() % 1000000000000L);
+            String upc = String.format("%012d", upcLong);
+            saveProductStatement.setString(1, upc);
+            saveProductStatement.setString(2, upc);
             saveProductStatement.setLong(3, product.getProduct().getId());
             saveProductStatement.setBigDecimal(4, product.getPrice());
             saveProductStatement.setInt(5, product.getAmount());
             saveProductStatement.setBoolean(6, product.getIsPromotional());
             saveProductStatement.executeUpdate();
+            ResultSet resultSet = saveProductStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                product.setUpc(resultSet.getObject(1, String.class));
+                product.setUpcProm(resultSet.getObject(2, String.class));
+            }
         } catch (SQLException e) {
             throw new DataProcessingException("Couldn't create " + product + ". ", e);
         }
@@ -63,7 +73,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
 
     @Override
     public List<StoreProduct> getAll() {
-        String query = "SELECT * FROM Store_Product";
+        String query = "SELECT * FROM Store_Product WHERE products_number > 0";
         List<StoreProduct> storeProducts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
@@ -116,7 +126,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
 
     @Override
     public List<StoreProduct> getAllSortedByAmount() {
-        String query = "SELECT * FROM Store_Product ORDER BY products_number";
+        String query = "SELECT * FROM Store_Product WHERE products_number > 0 ORDER BY products_number ";
         List<StoreProduct> storeProducts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
@@ -176,11 +186,10 @@ public class StoreProductDaoImpl implements StoreProductDao {
 
     @Override
     public List<StoreProduct> getAllPromotionalSortedByAmountAndName() {
-        String query = "SELECT UPC, product_name, selling_price, "
-                + "products_number, product.characteristics FROM Store_Product "
+        String query = "SELECT * FROM Store_Product "
                 + "JOIN product ON product.id_product = store_product.id_product "
                 + "WHERE promotional_product = true "
-                + "ORDER BY products_number, product_name";
+                + "ORDER BY products_number, product.product_name";
         List<StoreProduct> storeProducts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
@@ -199,11 +208,10 @@ public class StoreProductDaoImpl implements StoreProductDao {
 
     @Override
     public List<StoreProduct> getAllNonPromotionalSortedByAmountAndName() {
-        String query = "SELECT UPC, product_name, selling_price, "
-                + "products_number, product.characteristics FROM Store_Product "
+        String query = "SELECT * FROM Store_Product "
                 + "JOIN product ON product.id_product = store_product.id_product "
                 + "WHERE promotional_product = false "
-                + "ORDER BY products_number, product_name";
+                + "ORDER BY products_number, product.product_name";
         List<StoreProduct> storeProducts = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement getAllProductsStatement = connection.prepareStatement(query)) {
@@ -231,7 +239,7 @@ public class StoreProductDaoImpl implements StoreProductDao {
     }
 
     private Product getProductByStoreProductUpc(String upc) {
-        String query = "SELECT id_product, product.category_number, category_name, "
+        String query = "SELECT product.id_product, product.category_number, category_name, "
                 + "product_name, characteristics FROM product "
                 + "JOIN store_product sp on product.id_product = sp.id_product "
                 + "JOIN category ON product.category_number = category.category_number "

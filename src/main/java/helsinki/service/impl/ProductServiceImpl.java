@@ -40,8 +40,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getByProductName(String name) {
-        return productDao.getByProductName(name);
+    public List<Product> getProductsByName(String name) {
+        return productDao.getProductsByName(name);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllByCategorySortedByName(Integer categoryNumber) {
-        return productDao.getAllByCategorySortedByName(categoryNumber);
+    public List<Product> getAllByCategorySortedByName(String categoryName) {
+        return productDao.getAllByCategorySortedByName(categoryName);
     }
 }

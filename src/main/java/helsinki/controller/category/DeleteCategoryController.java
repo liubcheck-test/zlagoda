@@ -15,7 +15,8 @@ public class DeleteCategoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        categoryService.delete(Integer.parseInt(req.getParameter("category_number")));
+        req.setCharacterEncoding("UTF-8");
+        categoryService.delete(Integer.parseInt(req.getParameter("categoryNumber")));
         resp.sendRedirect(req.getContextPath() + "/categories");
     }
 }

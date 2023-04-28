@@ -9,15 +9,22 @@
     <title>Update Category</title>
 </head>
 <body>
-<form method="put" id="category" action="${pageContext.request.contextPath}/category/update"></form>
+<form method="post" id="employee" action="${pageContext.request.contextPath}/categories/update"></form>
 <h1 class="table_dark">Update category:</h1>
 <table border="1" class="table_dark">
     <tr>
-        <th>Category name</th>
+        <th>Number</th>
+        <th>Name</th>
     </tr>
     <tr>
         <td>
-            <input type="text" name="category_name" form="category" value="${category.categoryName}" required>
+            <input type="number" name="category_number" form="employee" value="${category.categoryNumber}" readonly>
+        </td>
+        <td>
+            <input type="text" name="category_name" form="employee" value="${category.categoryName}" required>
+        </td>
+        <td>
+            <input type="submit" name="update" form="employee">
         </td>
     </tr>
 </table>

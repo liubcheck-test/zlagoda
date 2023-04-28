@@ -2,14 +2,13 @@ package helsinki.dao.impl;
 
 import helsinki.dao.EmployeeDao;
 import helsinki.exception.DataProcessingException;
+import helsinki.exception.IncorrectPasswordException;
 import helsinki.lib.Dao;
 import helsinki.model.Employee;
 import helsinki.model.composite.Address;
 import helsinki.model.composite.FullName;
 import helsinki.util.ConnectionUtil;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import helsinki.util.HashUtil;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -41,13 +40,13 @@ public class EmployeeDaoImpl implements EmployeeDao {
             saveEmployeeStatement.setString(5, employee.getEmployeeRole().name());
             saveEmployeeStatement.setBigDecimal(6, employee.getSalary());
             saveEmployeeStatement.setDate(7, Date.valueOf(employee.getDateOfBirth()));
-            saveEmployeeStatement.setDate(8, Date.valueOf(employee.getDateOfBirth()));
+            saveEmployeeStatement.setDate(8, Date.valueOf(employee.getDateOfStart()));
             saveEmployeeStatement.setString(9, employee.getPhoneNumber());
             saveEmployeeStatement.setString(10, employee.getAddress().getCity());
             saveEmployeeStatement.setString(11, employee.getAddress().getStreet());
             saveEmployeeStatement.setString(12, employee.getAddress().getZipCode());
             saveEmployeeStatement.setString(13, employee.getEmail());
-            saveEmployeeStatement.setString(14, hashPassword(employee.getPassword()));
+            saveEmployeeStatement.setString(14, HashUtil.hasPassword(employee.getPassword()));
             saveEmployeeStatement.executeUpdate();
             ResultSet resultSet = saveEmployeeStatement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -95,6 +94,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Employee update(Employee employee) {
+        String password = HashUtil.hasPassword(employee.getPassword());
+        if (!password.equals(get(employee.getId()).get().getPassword())) {
+            throw new IncorrectPasswordException("Incorrect password");
+        }
         String query = "UPDATE Employee "
                 + "SET empl_surname = ?, empl_name = ?, empl_patronymic = ?, "
                 + "empl_role = ?, salary = ?, date_of_birth = ?, date_of_start = ?, "
@@ -117,7 +120,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             updateEmployeeStatement.setString(10, employee.getAddress().getStreet());
             updateEmployeeStatement.setString(11, employee.getAddress().getZipCode());
             updateEmployeeStatement.setString(12, employee.getEmail());
-            updateEmployeeStatement.setString(13, hashPassword(employee.getPassword()));
+            updateEmployeeStatement.setString(13, HashUtil.hasPassword(employee.getPassword()));
             updateEmployeeStatement.setString(14, employee.getId());
             updateEmployeeStatement.executeUpdate();
         } catch (SQLException e) {
@@ -196,8 +199,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String query = "SELECT * FROM employee WHERE email = ?";
         Employee employee = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement findDriverByLoginStatement =
-                     connection.prepareStatement(query)) {
+                PreparedStatement findDriverByLoginStatement =
+                        connection.prepareStatement(query)) {
             findDriverByLoginStatement.setString(1, email);
             ResultSet resultSet = findDriverByLoginStatement.executeQuery();
             if (resultSet.next()) {
@@ -241,21 +244,5 @@ public class EmployeeDaoImpl implements EmployeeDao {
         employeeData.put("street", resultSet.getString("street"));
         employeeData.put("zip_code", resultSet.getString("zip_code"));
         return employeeData;
-    }
-
-    private String hashPassword(String password) {
-        String hashedPassword;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            hashedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
-        }
-        return hashedPassword;
     }
 }

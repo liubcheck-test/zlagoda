@@ -47,4 +47,9 @@ public class CustomerCardServiceImpl implements CustomerCardService {
     public List<CustomerCard> getAllByPercentSortedBySurname(Integer percent) {
         return customerCardDao.getAllByPercentSortedBySurname(percent);
     }
+
+    @Override
+    public List<CustomerCard> getAllByLastName(String lastName) {
+        return customerCardDao.getAllByLastName(lastName);
+    }
 }

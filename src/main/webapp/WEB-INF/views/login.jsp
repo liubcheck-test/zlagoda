@@ -31,7 +31,7 @@
     </tr>
 </table>
 <h5 class="table_dark">
-    <a href="${pageContext.request.contextPath}/employee/add">Register new employee</a>
+    <a href="${pageContext.request.contextPath}/register">Register new employee</a>
 </h5>
 </form>
 </body>
